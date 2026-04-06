@@ -1,0 +1,21 @@
+.page {}
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.title { font-family: var(--font-primary); font-size: 1.5rem; color: var(--white); }
+.tableWrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-family: var(--font-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-dark);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+.table td { padding: 1rem; border-bottom: 1px solid var(--border); color: var(--gray); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: rgba(255,255,255,0.02); }
+.gray { color: var(--gray-dark); }

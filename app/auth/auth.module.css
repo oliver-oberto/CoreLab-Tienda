@@ -1,0 +1,85 @@
+.page {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background: radial-gradient(ellipse at center, rgba(46,74,115,0.05) 0%, transparent 70%);
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-lg), 0 0 60px rgba(46,74,115,0.1);
+}
+
+.logo { margin-bottom: 0.25rem; }
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 1.85rem;
+  color: var(--dark-blue);
+  text-align: center;
+}
+.subtitle {
+  color: var(--gray-dark);
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: -0.75rem;
+}
+
+.errorBox {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.3);
+  border-radius: var(--radius-sm);
+  color: #e74c3c;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.switchText {
+  font-size: 0.875rem;
+  color: var(--gray-dark);
+  text-align: center;
+}
+.switchLink {
+  color: var(--primary-blue);
+  font-weight: 600;
+  transition: color var(--transition);
+}
+.switchLink:hover { color: var(--dark-blue); }
+
+.adminHint {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(192,192,192,0.04);
+  border: 1px dashed rgba(192,192,192,0.2);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.adminHint p {
+  font-size: 0.75rem;
+  color: var(--gray-dark);
+}
+.adminHint code {
+  font-family: var(--font-mono);
+  color: var(--silver);
+  font-size: 0.72rem;
+}
