@@ -169,14 +169,12 @@ h4 {
 }
 
 .btn-primary {
-  background: var(--primary-blue);
+  background: var(--dark-blue);
   color: var(--pure-white);
-  border-color: var(--primary-blue);
+  border-color: var(--dark-blue);
 }
 
 .btn-primary:hover {
-  background: var(--dark-blue);
-  border-color: var(--dark-blue);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(46, 74, 115, 0.3);
 }
@@ -191,14 +189,14 @@ h4 {
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--dark-blue);
   color: var(--white);
-  border-color: var(--border);
+  border-color: var(--dark-blue);
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(46, 74, 115, 0.3);
 }
 
 .btn-danger {

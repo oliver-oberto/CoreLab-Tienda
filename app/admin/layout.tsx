@@ -49,15 +49,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main */}
       <div className={styles.main}>
-        <header className={styles.adminHeader}>
-          <div>
-            <h1 className={styles.adminTitle}>CoreLab Admin</h1>
-          </div>
-          <div className={styles.adminUser}>
-            <span className={styles.adminAvatar}>{user?.name?.[0] || "A"}</span>
-            <span className={styles.adminName}>{user?.name}</span>
-          </div>
-        </header>
 
         {/* Stats bar */}
         {stats && (

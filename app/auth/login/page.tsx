@@ -32,7 +32,7 @@ function LoginContent() {
       <div className={styles.card}>
         <div className={styles.logo}>
           <img
-            src="/assets/subidas/logo-oficial-transparent.png"
+            src="/assets/subidas/logo_azul_transparente.png"
             alt="CoreLab Logo"
             style={{
               height: "50px",

@@ -4,6 +4,7 @@ import getDb from "@/lib/db";
 import { signToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
+  console.log("--- LOGIN ATTEMPT RECEIVED ---");
   try {
     const { email, password } = await req.json();
     if (!email || !password)

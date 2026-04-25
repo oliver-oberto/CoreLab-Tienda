@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
               {users.map((user) => (
                 <tr key={user.id} id={`admin-user-${user.id}`}>
                   <td className={styles.gray}>{user.id}</td>
-                  <td style={{ color: "var(--white)", fontWeight: 600 }}>{user.name}</td>
+                  <td style={{ color: "var(--dark-blue)", fontWeight: 600 }}>{user.name}</td>
                   <td className={styles.gray}>{user.email}</td>
                   <td className={styles.gray}>{user.phone || "—"}</td>
                   <td>
