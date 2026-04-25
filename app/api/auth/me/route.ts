@@ -7,11 +7,12 @@ export async function GET() {
   if (!session) return NextResponse.json({ user: null });
 
   const db = getDb();
-  const user = db
-    .prepare("SELECT id, name, email, phone, address, role, created_at FROM users WHERE id = ?")
-    .get(session.userId) as any;
+  const userRs = await db.execute({
+    sql: "SELECT id, name, email, phone, address, role, created_at FROM users WHERE id = ?",
+    args: [session.userId]
+  });
 
-  return NextResponse.json({ user });
+  return NextResponse.json({ user: userRs.rows[0] || null });
 }
 
 export async function PUT(req: Request) {
@@ -20,8 +21,9 @@ export async function PUT(req: Request) {
 
   const { name, phone, address } = await req.json();
   const db = getDb();
-  db.prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?").run(
-    name, phone, address, session.userId
-  );
+  await db.execute({
+    sql: "UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?",
+    args: [name, phone, address, session.userId]
+  });
   return NextResponse.json({ success: true });
 }

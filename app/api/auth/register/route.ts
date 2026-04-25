@@ -14,17 +14,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "La contraseña debe tener al menos 6 caracteres" }, { status: 400 });
 
     const db = getDb();
-    const existing = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
-    if (existing)
+    const existingRs = await db.execute({
+      sql: "SELECT id FROM users WHERE email = ?",
+      args: [email]
+    });
+    
+    if (existingRs.rows[0])
       return NextResponse.json({ error: "Ya existe una cuenta con ese email" }, { status: 409 });
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const result = db
-      .prepare("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)")
-      .run(name, email, hashedPassword, phone || null);
+    const result = await db.execute({
+      sql: "INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)",
+      args: [name, email, hashedPassword, phone || null]
+    });
 
     const token = await signToken({
-      userId: result.lastInsertRowid as number,
+      userId: Number(result.lastInsertRowid),
       email,
       name,
       role: "user",

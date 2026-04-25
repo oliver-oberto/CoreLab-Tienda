@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
   const db = getDb();
-  const users = db.prepare("SELECT id, name, email, phone, role, created_at FROM users ORDER BY created_at DESC").all();
-  return NextResponse.json({ users });
+  const usersRs = await db.execute("SELECT id, name, email, phone, role, created_at FROM users ORDER BY created_at DESC");
+  return NextResponse.json({ users: usersRs.rows });
 }

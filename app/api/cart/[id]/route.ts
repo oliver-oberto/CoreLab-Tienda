@@ -11,9 +11,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const db = getDb();
 
   if (quantity <= 0) {
-    db.prepare("DELETE FROM cart_items WHERE id = ? AND user_id = ?").run(id, session.userId);
+    await db.execute({
+      sql: "DELETE FROM cart_items WHERE id = ? AND user_id = ?",
+      args: [id, session.userId]
+    });
   } else {
-    db.prepare("UPDATE cart_items SET quantity = ? WHERE id = ? AND user_id = ?").run(quantity, id, session.userId);
+    await db.execute({
+      sql: "UPDATE cart_items SET quantity = ? WHERE id = ? AND user_id = ?",
+      args: [quantity, id, session.userId]
+    });
   }
   return NextResponse.json({ success: true });
 }
@@ -24,6 +30,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
   const db = getDb();
-  db.prepare("DELETE FROM cart_items WHERE id = ? AND user_id = ?").run(id, session.userId);
+  await db.execute({
+    sql: "DELETE FROM cart_items WHERE id = ? AND user_id = ?",
+    args: [id, session.userId]
+  });
   return NextResponse.json({ success: true });
 }

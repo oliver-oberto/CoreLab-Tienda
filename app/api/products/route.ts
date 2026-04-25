@@ -31,21 +31,22 @@ export async function GET(req: NextRequest) {
     if (maxPrice) { query += " AND p.price <= ?"; params.push(parseFloat(maxPrice)); }
     if (featured === "true") { query += " AND p.featured = 1"; }
 
-    const countResult = db.prepare(query.replace("SELECT p.*, c.name as category_name, c.slug as category_slug", "SELECT COUNT(*) as total")).get(...params) as { total: number };
-    const total = countResult?.total || 0;
+    const countQuery = query.replace("SELECT p.*, c.name as category_name, c.slug as category_slug", "SELECT COUNT(*) as total");
+    const countRs = await db.execute({ sql: countQuery, args: params });
+    const total = countRs.rows[0]?.total ? Number(countRs.rows[0].total) : 0;
 
     query += " ORDER BY p.featured DESC, p.id DESC LIMIT ? OFFSET ?";
     params.push(limit, offset);
 
-    const products = db.prepare(query).all(...params);
-    const categories = db.prepare("SELECT * FROM categories ORDER BY name").all();
+    const productsRs = await db.execute({ sql: query, args: params });
+    const categoriesRs = await db.execute("SELECT * FROM categories ORDER BY name");
 
     return NextResponse.json({
-      products,
+      products: productsRs.rows,
       total,
       page,
       totalPages: Math.ceil(total / limit),
-      categories,
+      categories: categoriesRs.rows,
     });
   } catch (error) {
     console.error(error);
@@ -64,12 +65,15 @@ export async function POST(req: NextRequest) {
     const { name, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings } = body;
 
     const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-    const result = db.prepare(`
-      INSERT INTO products (name, slug, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, slug, description, price, original_price || null, category_id, brand || "Cellpure", stock, image_url, JSON.stringify(images || []), featured ? 1 : 0, weight || null, flavor || null, servings || null);
+    const result = await db.execute({
+      sql: `
+        INSERT INTO products (name, slug, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      args: [name, slug, description, price, original_price || null, category_id, brand || "Cellpure", stock, image_url, JSON.stringify(images || []), featured ? 1 : 0, weight || null, flavor || null, servings || null]
+    });
 
-    return NextResponse.json({ success: true, id: result.lastInsertRowid });
+    return NextResponse.json({ success: true, id: result.lastInsertRowid ? result.lastInsertRowid.toString() : null });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Error al crear producto" }, { status: 500 });

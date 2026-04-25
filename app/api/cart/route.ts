@@ -7,14 +7,17 @@ export async function GET() {
   if (!session) return NextResponse.json({ items: [] });
 
   const db = getDb();
-  const items = db.prepare(`
-    SELECT ci.id, ci.quantity, p.id as product_id, p.name, p.price, p.image_url, p.stock
-    FROM cart_items ci
-    JOIN products p ON ci.product_id = p.id
-    WHERE ci.user_id = ?
-  `).all(session.userId);
+  const itemsRs = await db.execute({
+    sql: `
+      SELECT ci.id, ci.quantity, p.id as product_id, p.name, p.price, p.image_url, p.stock
+      FROM cart_items ci
+      JOIN products p ON ci.product_id = p.id
+      WHERE ci.user_id = ?
+    `,
+    args: [session.userId]
+  });
 
-  return NextResponse.json({ items });
+  return NextResponse.json({ items: itemsRs.rows });
 }
 
 export async function POST(req: NextRequest) {
@@ -24,16 +27,32 @@ export async function POST(req: NextRequest) {
   const { product_id, quantity = 1 } = await req.json();
   const db = getDb();
 
-  const product = db.prepare("SELECT id, stock FROM products WHERE id = ? AND active = 1").get(product_id) as { id: number; stock: number } | undefined;
+  const productRs = await db.execute({
+    sql: "SELECT id, stock FROM products WHERE id = ? AND active = 1",
+    args: [product_id]
+  });
+  
+  const product = productRs.rows[0];
   if (!product) return NextResponse.json({ error: "Producto no disponible" }, { status: 404 });
 
-  const existing = db.prepare("SELECT id, quantity FROM cart_items WHERE user_id = ? AND product_id = ?").get(session.userId, product_id) as { id: number; quantity: number } | undefined;
+  const existingRs = await db.execute({
+    sql: "SELECT id, quantity FROM cart_items WHERE user_id = ? AND product_id = ?",
+    args: [session.userId, product_id]
+  });
+  
+  const existing = existingRs.rows[0];
 
   if (existing) {
-    const newQty = Math.min(existing.quantity + quantity, product.stock);
-    db.prepare("UPDATE cart_items SET quantity = ? WHERE id = ?").run(newQty, existing.id);
+    const newQty = Math.min(Number(existing.quantity) + Number(quantity), Number(product.stock));
+    await db.execute({
+      sql: "UPDATE cart_items SET quantity = ? WHERE id = ?",
+      args: [newQty, existing.id]
+    });
   } else {
-    db.prepare("INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)").run(session.userId, product_id, Math.min(quantity, product.stock));
+    await db.execute({
+      sql: "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)",
+      args: [session.userId, product_id, Math.min(Number(quantity), Number(product.stock))]
+    });
   }
 
   return NextResponse.json({ success: true });

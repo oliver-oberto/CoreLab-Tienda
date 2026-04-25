@@ -11,9 +11,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email y contraseña requeridos" }, { status: 400 });
 
     const db = getDb();
-    const user = db
-      .prepare("SELECT id, name, email, password, role FROM users WHERE email = ?")
-      .get(email) as { id: number; name: string; email: string; password: string; role: string } | undefined;
+    const userRs = await db.execute({
+      sql: "SELECT id, name, email, password, role FROM users WHERE email = ?",
+      args: [email]
+    });
+    
+    const user = userRs.rows[0] as unknown as { id: number; name: string; email: string; password: string; role: string } | undefined;
 
     if (!user)
       return NextResponse.json({ error: "Credenciales incorrectas" }, { status: 401 });

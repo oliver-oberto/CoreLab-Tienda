@@ -1,23 +1,26 @@
-import Database from "better-sqlite3";
-import path from "path";
-import fs from "fs";
+import { createClient, Client } from "@libsql/client";
 
-const DB_PATH = path.join(process.cwd(), "corelab.db");
+let db: Client | null = null;
+let initialized = false;
 
-let db: Database.Database;
-
-function getDb(): Database.Database {
+export default function getDb(): Client {
   if (!db) {
-    db = new Database(DB_PATH);
-    db.pragma("journal_mode = WAL");
-    db.pragma("foreign_keys = ON");
-    initializeSchema();
+    db = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
+    });
+    
+    // Solo inicializamos si estamos en un entorno donde tenga sentido
+    if (!initialized && typeof window === 'undefined') {
+      initializeSchema(db).catch(console.error);
+      initialized = true;
+    }
   }
   return db;
 }
 
-function initializeSchema() {
-  db.exec(`
+async function initializeSchema(client: Client) {
+  await client.executeMultiple(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -96,15 +99,14 @@ function initializeSchema() {
     CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
   `);
 
-  seedData();
+  await seedData(client);
 }
 
-function seedData() {
-  const count = db.prepare("SELECT COUNT(*) as c FROM categories").get() as { c: number };
-  if (count.c > 0) return;
+async function seedData(client: Client) {
+  const rs = await client.execute("SELECT COUNT(*) as c FROM categories");
+  if (rs.rows[0].c && Number(rs.rows[0].c) > 0) return;
 
   // Categories
-  const insertCat = db.prepare("INSERT OR IGNORE INTO categories (name, slug, icon) VALUES (?, ?, ?)");
   const categories = [
     ["Proteínas", "proteinas", "🥛"],
     ["Creatina", "creatina", "💪"],
@@ -115,23 +117,24 @@ function seedData() {
     ["Colágeno", "colageno", "✨"],
     ["Minerales", "minerales", "⚗️"],
   ];
-  categories.forEach((c) => insertCat.run(...c));
+  
+  for (const c of categories) {
+    await client.execute({
+      sql: "INSERT OR IGNORE INTO categories (name, slug, icon) VALUES (?, ?, ?)",
+      args: c
+    });
+  }
 
   // Admin user
   const bcrypt = require("bcryptjs");
   const adminHash = bcrypt.hashSync("admin123", 12);
-  db.prepare(
-    "INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)"
-  ).run("Admin CoreLab", "admin@corelab.com", adminHash, "admin");
+  await client.execute({
+    sql: "INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+    args: ["Admin CoreLab", "admin@corelab.com", adminHash, "admin"]
+  });
 
   // Products
-  const insertProd = db.prepare(`
-    INSERT OR IGNORE INTO products 
-    (name, slug, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const products = [
+  const products: any[] = [
     [
       "Whey Protein Concentrate 80%",
       "whey-protein-chocolate",
@@ -276,7 +279,12 @@ function seedData() {
     ],
   ];
 
-  products.forEach((p) => insertProd.run(...p));
+  for (const p of products) {
+    await client.execute({
+      sql: `INSERT OR IGNORE INTO products 
+      (name, slug, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: p
+    });
+  }
 }
-
-export default getDb;

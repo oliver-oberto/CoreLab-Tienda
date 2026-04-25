@@ -8,13 +8,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
   const db = getDb();
-  const order = db.prepare("SELECT * FROM orders WHERE id = ?").get(id) as any;
+  const orderRs = await db.execute({
+    sql: "SELECT * FROM orders WHERE id = ?",
+    args: [id]
+  });
+  
+  const order = orderRs.rows[0];
   if (!order) return NextResponse.json({ error: "Pedido no encontrado" }, { status: 404 });
   if (session.role !== "admin" && order.user_id !== session.userId)
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
-  const items = db.prepare("SELECT * FROM order_items WHERE order_id = ?").all(id);
-  return NextResponse.json({ order, items });
+  const itemsRs = await db.execute({
+    sql: "SELECT * FROM order_items WHERE order_id = ?",
+    args: [id]
+  });
+  
+  return NextResponse.json({ order, items: itemsRs.rows });
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -25,6 +34,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const { status } = await req.json();
   const db = getDb();
-  db.prepare("UPDATE orders SET status = ? WHERE id = ?").run(status, id);
+  await db.execute({
+    sql: "UPDATE orders SET status = ? WHERE id = ?",
+    args: [status, id]
+  });
   return NextResponse.json({ success: true });
 }
