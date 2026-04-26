@@ -28,8 +28,9 @@
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.2em;
-  color: var(--gray-dark);
+  color: var(--dark-blue);
   text-transform: uppercase;
+  opacity: 0.8;
 }
 
 .sidebarNav {
@@ -49,13 +50,13 @@
   font-family: var(--font-primary);
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--gray);
+  color: var(--primary-blue);
   transition: all 0.15s;
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--white);
+  background: rgba(46, 74, 115, 0.1);
+  color: var(--dark-blue);
 }
 
 .sidebarFooter {
@@ -113,15 +114,16 @@
   font-family: var(--font-primary);
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 
 .statLabel {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.15em;
-  color: var(--gray-dark);
+  color: var(--primary-blue);
   text-transform: uppercase;
+  opacity: 0.7;
 }
 
 .content {
