@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className={styles.logo} id="navbar-logo">
           <img
-            src="/assets/subidas/logo-oficial-transparent.png"
+            src="/assets/subidas/logo_azul_transparente.png"
             alt="CoreLab Logo"
             style={{
               height: "50px",

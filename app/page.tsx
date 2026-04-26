@@ -71,7 +71,7 @@ export default function HomePage() {
             <div className={styles.heroImage}>
               <div className={styles.heroImageWrap}>
                 <Image
-                  src="/assets/subidas/FotoPrincipal.png"
+                  src="/assets/subidas/HeroFinal.png"
                   alt="Suplementos CoreLab"
                   fill
                   style={{ objectFit: "cover" }}
