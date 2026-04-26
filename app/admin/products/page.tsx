@@ -24,6 +24,10 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
 
+  const [showCatModal, setShowCatModal] = useState(false);
+  const [catForm, setCatForm] = useState({ name: "", icon: "📦" });
+  const [savingCat, setSavingCat] = useState(false);
+
   const fetchData = async () => {
     setLoading(true);
     const res = await fetch(`/api/products?limit=50${search ? `&search=${search}` : ""}`);
@@ -81,6 +85,28 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleSaveCat = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catForm.name) return;
+    setSavingCat(true);
+    const res = await fetch("/api/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(catForm)
+    });
+    const data = await res.json();
+    setSavingCat(false);
+    if (res.ok) {
+      setCategories(prev => [...prev, data.category].sort((a, b) => a.name.localeCompare(b.name)));
+      setForm((p: any) => ({ ...p, category_id: data.category.id }));
+      setShowCatModal(false);
+      setCatForm({ name: "", icon: "📦" });
+      showToast("Categoría creada ✅", "success");
+    } else {
+      showToast(data.error || "Error al crear categoría", "error");
+    }
+  };
+
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`¿Eliminar "${name}"?`)) return;
     const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
@@ -108,7 +134,7 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* Form */}
+      {/* Product Form */}
       {showForm && (
         <div className={styles.formOverlay}>
           <div className={styles.formModal}>
@@ -139,28 +165,12 @@ export default function AdminProductsPage() {
                   <div className={styles.categoryControl}>
                     <select className="form-select" value={form.category_id} onChange={e => setForm((p: any) => ({ ...p, category_id: e.target.value }))} style={{ flex: 1 }}>
                       <option value="">Sin categoría</option>
-                      {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      {categories.map((c: any) => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
                     </select>
                     <button 
                       type="button" 
                       className={styles.addQuickBtn} 
-                      onClick={async () => {
-                        const name = prompt("Nombre de la nueva categoría:");
-                        if (!name) return;
-                        const res = await fetch("/api/categories", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ name })
-                        });
-                        const data = await res.json();
-                        if (res.ok) {
-                          setCategories(prev => [...prev, data.category].sort((a, b) => a.name.localeCompare(b.name)));
-                          setForm((p: any) => ({ ...p, category_id: data.category.id }));
-                          showToast("Categoría creada", "success");
-                        } else {
-                          showToast(data.error || "Error al crear categoría", "error");
-                        }
-                      }}
+                      onClick={() => setShowCatModal(true)}
                       title="Nueva categoría rápida"
                     >
                       +
@@ -219,6 +229,49 @@ export default function AdminProductsPage() {
         </div>
       )}
 
+      {/* Category Modal */}
+      {showCatModal && (
+        <div className={styles.formOverlay} style={{ zIndex: 300 }}>
+          <div className={`${styles.formModal} ${styles.modalSmall}`}>
+            <div className={styles.formHeader}>
+              <h3>Nueva categoría</h3>
+              <button className={styles.closeBtn} onClick={() => setShowCatModal(false)}>✕</button>
+            </div>
+            <form onSubmit={handleSaveCat} className={styles.form}>
+              <div className="form-group">
+                <label className="form-label">Nombre de categoría</label>
+                <input 
+                  className="form-input" 
+                  value={catForm.name} 
+                  onChange={e => setCatForm(p => ({ ...p, name: e.target.value }))} 
+                  required 
+                  placeholder="Ej: Proteínas, Creatinas..."
+                  autoFocus
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Ícono (Emoji)</label>
+                <input 
+                  className="form-input" 
+                  value={catForm.icon} 
+                  onChange={e => setCatForm(p => ({ ...p, icon: e.target.value }))} 
+                  placeholder="💊, 🥛, ⚡..."
+                />
+                <p style={{ fontSize: '0.7rem', color: 'var(--gray-dark)', marginTop: '0.4rem' }}>
+                  Apretá <b>Win + .</b> (punto) para elegir un emoji.
+                </p>
+              </div>
+              <div className={styles.formActions}>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowCatModal(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" disabled={savingCat}>
+                  {savingCat ? "Creando..." : "Crear categoría"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       {loading ? (
         <div className="loading-center"><div className="spinner" /></div>
@@ -244,7 +297,9 @@ export default function AdminProductsPage() {
                       <span className={styles.productBrand}>{p.brand}</span>
                     </div>
                   </td>
-                  <td className={styles.gray}>{p.category_name || "—"}</td>
+                  <td className={styles.gray}>
+                    {p.category_icon} {p.category_name || "—"}
+                  </td>
                   <td>
                     <div>
                       <div className={styles.priceVal}>{formatPrice(p.price)}</div>
