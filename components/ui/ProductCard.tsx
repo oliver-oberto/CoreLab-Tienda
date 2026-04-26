@@ -50,11 +50,14 @@ export default function ProductCard({ product }: { product: Product }) {
     <Link href={`/products/${product.id}`} className={styles.card} id={`product-card-${product.id}`}>
       <div className={styles.imageWrap}>
         <Image
-          src={(product.image_url && product.image_url.includes('http')) ? product.image_url : "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=400"}
+          src={(product.image_url && product.image_url.includes('http')) ? product.image_url : "/logo_corelab.png"}
           alt={product.name}
           fill
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: "contain" }}
           sizes="(max-width: 768px) 50vw, 25vw"
+          onError={(e: any) => {
+            e.currentTarget.src = "/logo_corelab.png";
+          }}
         />
         {product.featured === 1 && (
           <span className={styles.featuredBadge}>⭐ Destacado</span>
