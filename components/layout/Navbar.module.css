@@ -5,10 +5,10 @@
   right: 0;
   height: var(--navbar-height);
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(31, 53, 84, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid transparent;
   transition: all var(--transition);
 }
 
@@ -44,7 +44,7 @@
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: var(--dark-blue);
+  color: #FFFFFF;
 }
 
 .logoSub {
@@ -72,7 +72,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--dark-blue);
+  color: #F2F4F7;
   transition: all var(--transition);
   position: relative;
 }
@@ -124,9 +124,9 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  color: var(--dark-blue);
+  color: #FFFFFF;
   transition: all var(--transition);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
 }
 
@@ -165,9 +165,9 @@
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border);
-  color: var(--dark-blue);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
   font-size: 0.85rem;
   font-weight: 500;
   transition: all var(--transition);
