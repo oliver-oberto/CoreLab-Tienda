@@ -183,6 +183,7 @@
   gap: 0.75rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
 /* Orders */

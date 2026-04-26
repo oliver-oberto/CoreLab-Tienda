@@ -238,8 +238,8 @@ export default function AdminProductsPage() {
               <button className={styles.closeBtn} onClick={() => setShowCatModal(false)}>✕</button>
             </div>
             <form onSubmit={handleSaveCat} className={styles.form}>
-              <div className="form-group">
-                <label className="form-label">Nombre de categoría</label>
+              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                <label className="form-label" style={{ marginBottom: '0.4rem' }}>Nombre de categoría</label>
                 <input 
                   className="form-input" 
                   value={catForm.name} 
@@ -249,8 +249,8 @@ export default function AdminProductsPage() {
                   autoFocus
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label">Ícono (Emoji)</label>
+              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                <label className="form-label" style={{ marginBottom: '0.4rem' }}>Ícono (Emoji)</label>
                 <input 
                   className="form-input" 
                   value={catForm.icon} 
@@ -261,9 +261,9 @@ export default function AdminProductsPage() {
                   Apretá <b>Win + .</b> (punto) para elegir un emoji.
                 </p>
               </div>
-              <div className={styles.formActions}>
-                <button type="button" className="btn btn-ghost" onClick={() => setShowCatModal(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={savingCat}>
+              <div className={styles.formActions} style={{ justifyContent: 'stretch' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowCatModal(false)} style={{ flex: 1, minWidth: '100px' }}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" disabled={savingCat} style={{ flex: 2, minWidth: '140px' }}>
                   {savingCat ? "Creando..." : "Crear categoría"}
                 </button>
               </div>
