@@ -98,9 +98,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 src={images[activeImage] || product.image_url}
                 alt={product.name}
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "contain" }}
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
+                onError={(e: any) => {
+                  e.currentTarget.src = "/logo_corelab.png"; // Fallback simple
+                }}
               />
               {discount && <span className={styles.discountBadge}>-{discount}%</span>}
               {product.featured === 1 && <span className={styles.featuredBadge}>⭐ Destacado</span>}
@@ -121,7 +124,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             )}
           </div>
 
-          {/* Info */}
+          {/* Info Side */}
           <div className={styles.info}>
             <div className={styles.meta}>
               <span className={styles.brand}>{product.brand}</span>
@@ -138,7 +141,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               </div>
             )}
 
-            {/* Price */}
             <div className={styles.priceBlock}>
               <span className={styles.price}>{formatPrice(product.price)}</span>
               {product.original_price && (
@@ -149,7 +151,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               )}
             </div>
 
-            {/* Stock */}
             <div className={styles.stockInfo}>
               <div className={`${styles.stockDot} ${product.stock > 0 ? styles.inStock : styles.noStock}`} />
               <span className={product.stock > 0 ? styles.stockOk : styles.stockNo}>
@@ -157,7 +158,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               </span>
             </div>
 
-            {/* Quantity */}
             {product.stock > 0 && (
               <div className={styles.quantityRow}>
                 <span className={styles.qtyLabel}>Cantidad</span>
@@ -180,7 +180,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               </div>
             )}
 
-            {/* Actions */}
             <div className={styles.actions}>
               <button
                 className="btn btn-primary btn-lg btn-full"
@@ -200,22 +199,26 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 💬 Consultar por WhatsApp
               </a>
             </div>
+          </div>
+        </div>
 
-            {/* Description */}
-            <div className={styles.description}>
-              <h2 className={styles.descTitle}>Descripción</h2>
-              <p className={styles.descText}>{product.description}</p>
-            </div>
+        {/* Full Width Bottom Content */}
+        <div className={styles.bottomLayout}>
+          <div className={styles.description}>
+            <h2 className={styles.descTitle}>Descripción del Producto</h2>
+            <div className={styles.descText}>{product.description}</div>
+          </div>
 
-            {/* Trust */}
+          <div className={styles.trustWrapper}>
             <div className={styles.trust}>
               {[
                 { icon: "✅", text: "Producto 100% original" },
-                { icon: "🚚", text: "Envío rápido" },
-                { icon: "🔒", text: "Pago seguro" },
+                { icon: "🚚", text: "Envío rápido a todo el país" },
+                { icon: "🔒", text: "Compra 100% segura" },
               ].map((item) => (
                 <div key={item.text} className={styles.trustItem}>
-                  <span>{item.icon}</span><span>{item.text}</span>
+                  <span className={styles.trustIcon}>{item.icon}</span>
+                  <span className={styles.trustText}>{item.text}</span>
                 </div>
               ))}
             </div>
