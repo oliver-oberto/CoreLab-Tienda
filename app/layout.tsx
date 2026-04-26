@@ -16,6 +16,9 @@ export const metadata: Metadata = {
     description: "Distribuidor premium de suplementos Cellpure y más",
     type: "website",
   },
+  icons: {
+    icon: "/assets/subidas/Logo-corelab-fondo-azul.PNG",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
