@@ -136,10 +136,36 @@ export default function AdminProductsPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Categoría</label>
-                  <select className="form-select" value={form.category_id} onChange={e => setForm((p: any) => ({ ...p, category_id: e.target.value }))}>
-                    <option value="">Sin categoría</option>
-                    {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
+                  <div className={styles.categoryControl}>
+                    <select className="form-select" value={form.category_id} onChange={e => setForm((p: any) => ({ ...p, category_id: e.target.value }))} style={{ flex: 1 }}>
+                      <option value="">Sin categoría</option>
+                      {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                    <button 
+                      type="button" 
+                      className={styles.addQuickBtn} 
+                      onClick={async () => {
+                        const name = prompt("Nombre de la nueva categoría:");
+                        if (!name) return;
+                        const res = await fetch("/api/categories", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ name })
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                          setCategories(prev => [...prev, data.category].sort((a, b) => a.name.localeCompare(b.name)));
+                          setForm((p: any) => ({ ...p, category_id: data.category.id }));
+                          showToast("Categoría creada", "success");
+                        } else {
+                          showToast(data.error || "Error al crear categoría", "error");
+                        }
+                      }}
+                      title="Nueva categoría rápida"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Marca</label>

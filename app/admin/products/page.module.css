@@ -347,3 +347,25 @@
   text-align: center;
   color: var(--gray);
 }
+
+.categoryControl {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.addQuickBtn {
+  padding: 0 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--primary-blue);
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.addQuickBtn:hover {
+  background: var(--primary-blue);
+  color: var(--white);
+  border-color: var(--primary-blue);
+}
