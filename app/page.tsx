@@ -74,7 +74,7 @@ export default function HomePage() {
                   src="/assets/subidas/FotoPrincipal.png"
                   alt="Suplementos CoreLab"
                   fill
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "contain" }}
                   priority
                 />
                 <div className={styles.heroImageOverlay} />
