@@ -80,7 +80,7 @@ export default function HomePage() {
                 <div className={styles.heroImageOverlay} />
               </div>
               <div className={styles.heroBadge}>
-                <span className={styles.heroBadgeLabel}>PRODUCTO DESTACADO</span>
+                <span className={styles.heroBadgeLabel}>PRODUCTOS DESTACADOS</span>
                 <span className={styles.heroBadgeBrand}>de Cellpure</span>
               </div>
             </div>
