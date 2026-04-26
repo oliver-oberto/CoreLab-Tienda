@@ -166,7 +166,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className={styles.bannerBrands}>
-              {["Cellpure", "Cellpure", "Cellpure"].map((b, i) => (
+              {["Cellpure", "UltraTech", "Vase24k"].map((b, i) => (
                 <div key={i} className={styles.brandPill}>{b}</div>
               ))}
             </div>

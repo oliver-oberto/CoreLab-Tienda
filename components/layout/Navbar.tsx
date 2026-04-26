@@ -35,7 +35,7 @@ export default function Navbar() {
             src="/assets/subidas/logo-oficial-transparent.png"
             alt="CoreLab Logo"
             style={{
-              height: "50px",
+              height: "40px",
               width: "auto",
               objectFit: "contain",
               display: "block"
