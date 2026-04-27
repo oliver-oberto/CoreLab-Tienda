@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const db = getDb();
-    const { name, icon } = await req.json();
+    const { name, icon, description } = await req.json();
 
     if (!name) return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });
 
@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
       .replace(/[^a-z0-9-]/g, "");
 
     const result = await db.execute({
-      sql: "INSERT INTO categories (name, slug, icon) VALUES (?, ?, ?)",
-      args: [name, slug, icon || "💊"]
+      sql: "INSERT INTO categories (name, slug, icon, description) VALUES (?, ?, ?, ?)",
+      args: [name, slug, icon || "💊", description || ""]
     });
 
     return NextResponse.json({ 
@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
         id: result.lastInsertRowid?.toString(), 
         name, 
         slug, 
-        icon: icon || "💊" 
+        icon: icon || "💊",
+        description: description || ""
       } 
     });
   } catch (error) {

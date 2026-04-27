@@ -10,7 +10,7 @@ export default function AdminCategoriesPage() {
   
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: "", icon: "📦" });
+  const [form, setForm] = useState({ name: "", icon: "📦", description: "" });
   const [saving, setSaving] = useState(false);
 
   const fetchCategories = async () => {
@@ -25,13 +25,13 @@ export default function AdminCategoriesPage() {
 
   const openNew = () => {
     setEditingId(null);
-    setForm({ name: "", icon: "📦" });
+    setForm({ name: "", icon: "📦", description: "" });
     setShowModal(true);
   };
 
   const openEdit = (cat: any) => {
     setEditingId(cat.id);
-    setForm({ name: cat.name, icon: cat.icon });
+    setForm({ name: cat.name, icon: cat.icon, description: cat.description || "" });
     setShowModal(true);
   };
 
@@ -83,6 +83,7 @@ export default function AdminCategoriesPage() {
               <div className={styles.cardIcon}>{c.icon}</div>
               <div className={styles.cardInfo}>
                 <span className={styles.cardName}>{c.name}</span>
+                <span className={styles.cardDesc}>{c.description || "Sin descripción"}</span>
                 <span className={styles.cardSlug}>slug: {c.slug}</span>
               </div>
               <div className={styles.cardActions}>
@@ -111,6 +112,15 @@ export default function AdminCategoriesPage() {
                   required 
                   placeholder="Ej: Proteínas"
                   autoFocus
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Descripción corta (Home)</label>
+                <input 
+                  className="form-input" 
+                  value={form.description} 
+                  onChange={e => setForm(p => ({ ...p, description: e.target.value }))} 
+                  placeholder="Ej: Whey, Caseína, Vegana"
                 />
               </div>
               <div className="form-group">

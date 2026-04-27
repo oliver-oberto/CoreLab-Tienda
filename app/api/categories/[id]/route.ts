@@ -10,7 +10,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   try {
     const db = getDb();
-    const { name, icon } = await req.json();
+    const { name, icon, description } = await req.json();
 
     if (!name) return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });
 
@@ -20,8 +20,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       .replace(/[^a-z0-9-]/g, "");
 
     await db.execute({
-      sql: "UPDATE categories SET name = ?, slug = ?, icon = ? WHERE id = ?",
-      args: [name, slug, icon || "💊", id]
+      sql: "UPDATE categories SET name = ?, slug = ?, icon = ?, description = ? WHERE id = ?",
+      args: [name, slug, icon || "💊", description || "", id]
     });
 
     return NextResponse.json({ success: true });

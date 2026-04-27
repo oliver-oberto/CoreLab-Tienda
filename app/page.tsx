@@ -5,23 +5,20 @@ import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
 import styles from "./page.module.css";
 
-const CATEGORIES = [
-  { name: "Proteínas", slug: "proteinas", icon: "💪", desc: "Whey, Caseína, Vegana" },
-  { name: "Creatina", slug: "creatina", icon: "🥛", desc: "Monohidratada, HCL" },
-  { name: "Pre-Entreno", slug: "pre-entreno", icon: "⚡", desc: "Energía & Foco" },
-  { name: "Aminoácidos", slug: "aminoacidos", icon: "🧬", desc: "BCAA, Glutamina" },
-  { name: "Vitaminas", slug: "vitaminas", icon: "🌿", desc: "Multivitamínicos, Vitamina C" },
-  { name: "Minerales", slug: "minerales", icon: "⚗️", desc: "Magnesio, Zinc" },
-];
-
 export default function HomePage() {
   const [featured, setFeatured] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/products?featured=true&limit=4")
-      .then((r) => r.json())
-      .then((d) => { setFeatured(d.products || []); setLoading(false); });
+    Promise.all([
+      fetch("/api/products?featured=true&limit=4").then(r => r.json()),
+      fetch("/api/categories").then(r => r.json())
+    ]).then(([productsData, catsData]) => {
+      setFeatured(productsData.products || []);
+      setCategories(catsData.categories || []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   return (
@@ -108,25 +105,27 @@ export default function HomePage() {
       </section>
 
       {/* ── Categories ── */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-label">Explorar</span>
-            <h2 className="section-title">Categorías</h2>
-            <p className="section-subtitle">Encontrá el suplemento ideal para tus objetivos</p>
+      {categories.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              <span className="section-label">Explorar</span>
+              <h2 className="section-title">Categorías</h2>
+              <p className="section-subtitle">Encontrá el suplemento ideal para tus objetivos</p>
+            </div>
+            <div className={styles.categoryGrid}>
+              {categories.map((cat) => (
+                <Link key={cat.slug} href={`/products?category=${cat.slug}`} className={styles.categoryCard} id={`cat-${cat.slug}`}>
+                  <span className={styles.catIcon}>{cat.icon}</span>
+                  <h3 className={styles.catName}>{cat.name}</h3>
+                  <p className={styles.catDesc}>{cat.description}</p>
+                  <span className={styles.catArrow}>→</span>
+                </Link>
+              ))}
+            </div>
           </div>
-          <div className={styles.categoryGrid}>
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.slug} href={`/products?category=${cat.slug}`} className={styles.categoryCard} id={`cat-${cat.slug}`}>
-                <span className={styles.catIcon}>{cat.icon}</span>
-                <h3 className={styles.catName}>{cat.name}</h3>
-                <p className={styles.catDesc}>{cat.desc}</p>
-                <span className={styles.catArrow}>→</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Featured Products ── */}
       <section className="section" style={{ paddingTop: 0 }}>
