@@ -29,19 +29,22 @@
 
 .featuredBadge {
   position: absolute;
-  top: 10px; left: 10px;
-  background: rgba(0,14,31,0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(192,192,192,0.3);
-  color: var(--silver);
+  top: 12px; left: 12px;
+  background: #ffffff;
+  border: 1.5px solid var(--primary-blue);
+  color: var(--dark-blue);
   font-family: var(--font-primary);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.3rem 0.6rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 20px;
   z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .discountBadge {
