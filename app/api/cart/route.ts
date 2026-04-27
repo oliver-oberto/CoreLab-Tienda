@@ -9,7 +9,7 @@ export async function GET() {
   const db = getDb();
   const itemsRs = await db.execute({
     sql: `
-      SELECT ci.id, ci.quantity, p.id as product_id, p.name, p.price, p.image_url, p.stock
+      SELECT ci.id, ci.quantity, ci.selected_flavor, p.id as product_id, p.name, p.price, p.image_url, p.stock
       FROM cart_items ci
       JOIN products p ON ci.product_id = p.id
       WHERE ci.user_id = ?
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const { product_id, quantity = 1 } = await req.json();
+  const { product_id, quantity = 1, selected_flavor = null } = await req.json();
   const db = getDb();
 
   const productRs = await db.execute({
@@ -35,9 +35,14 @@ export async function POST(req: NextRequest) {
   const product = productRs.rows[0];
   if (!product) return NextResponse.json({ error: "Producto no disponible" }, { status: 404 });
 
+  // Buscar coincidencia exacta incluyendo sabor
   const existingRs = await db.execute({
-    sql: "SELECT id, quantity FROM cart_items WHERE user_id = ? AND product_id = ?",
-    args: [session.userId, product_id]
+    sql: `
+      SELECT id, quantity FROM cart_items 
+      WHERE user_id = ? AND product_id = ? 
+      AND (selected_flavor = ? OR (selected_flavor IS NULL AND ? IS NULL))
+    `,
+    args: [session.userId, product_id, selected_flavor, selected_flavor]
   });
   
   const existing = existingRs.rows[0];
@@ -50,8 +55,8 @@ export async function POST(req: NextRequest) {
     });
   } else {
     await db.execute({
-      sql: "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)",
-      args: [session.userId, product_id, Math.min(Number(quantity), Number(product.stock))]
+      sql: "INSERT INTO cart_items (user_id, product_id, quantity, selected_flavor) VALUES (?, ?, ?, ?)",
+      args: [session.userId, product_id, Math.min(Number(quantity), Number(product.stock)), selected_flavor]
     });
   }
 

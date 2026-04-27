@@ -107,6 +107,37 @@
   gap: 0.5rem;
 }
 
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.categoryItem:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.categoryItem input {
+  cursor: pointer;
+}
+
 /* Form modal */
 .formOverlay {
   position: fixed;

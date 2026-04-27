@@ -48,7 +48,12 @@ export default function CartPage() {
                 </div>
                 <div className={styles.itemInfo}>
                   <Link href={`/products/${item.product_id}`} className={styles.itemName}>{item.name}</Link>
-                  <span className={styles.itemPrice}>{formatPrice(item.price)}</span>
+                  <div className={styles.itemMeta}>
+                    <span className={styles.itemPrice}>{formatPrice(item.price)}</span>
+                    {item.selected_flavor && (
+                      <span className={styles.itemFlavor}>Sabor: {item.selected_flavor}</span>
+                    )}
+                  </div>
                 </div>
                 <div className={styles.itemControls}>
                   <div className={styles.qtyControl}>

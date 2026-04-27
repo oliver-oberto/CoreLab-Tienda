@@ -20,6 +20,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
+  const [selectedFlavor, setSelectedFlavor] = useState<string>("");
+  
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -38,11 +40,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     });
   }, [params]);
 
+  const flavors: string[] = (() => {
+    try { return JSON.parse(product?.flavors || "[]"); } catch { return []; }
+  })();
+
   const handleAddToCart = async () => {
     if (!user) { router.push("/auth/login"); return; }
+    if (flavors.length > 0 && !selectedFlavor) {
+      showToast("Por favor, selecciona un sabor 🥤", "info");
+      return;
+    }
     setAdding(true);
-    await addToCart(product.id, quantity);
-    showToast(`${product.name} agregado al carrito 🛒`, "success");
+    await addToCart(product.id, quantity, selectedFlavor);
+    showToast(`${product.name}${selectedFlavor ? ` (${selectedFlavor})` : ""} agregado al carrito 🛒`, "success");
     setAdding(false);
   };
 
@@ -81,18 +91,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <span className={styles.sep}>›</span>
           <Link href="/products" className={styles.crumb}>Productos</Link>
           <span className={styles.sep}>›</span>
-          {product.category_name && (
-            <>
-              <Link href={`/products?category=${product.category_slug}`} className={styles.crumb}>{product.category_name}</Link>
-              <span className={styles.sep}>›</span>
-            </>
-          )}
+          {(product.category_names || "").split(", ").map((catName: string, i: number) => {
+            const slugs = (product.category_slugs || "").split(",");
+            const slug = slugs[i] || "";
+            return (
+              <span key={catName}>
+                <Link href={`/products?category=${slug}`} className={styles.crumb}>{catName}</Link>
+                <span className={styles.sep}>›</span>
+              </span>
+            );
+          })}
           <span className={styles.crumbActive}>{product.name}</span>
         </nav>
 
         <div className={styles.layout}>
           {/* Gallery */}
           <div className={styles.gallery}>
+            {/* ... omitiendo imagen por brevedad ... */}
             <div className={styles.mainImage}>
               <Image
                 src={images[activeImage] || product.image_url}
@@ -102,7 +117,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 onError={(e: any) => {
-                  e.currentTarget.src = "/logo_corelab.png"; // Fallback simple
+                  e.currentTarget.src = "/logo_corelab.png";
                 }}
               />
               {discount && <span className={styles.discountBadge}>-{discount}%</span>}
@@ -128,16 +143,38 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <div className={styles.info}>
             <div className={styles.meta}>
               <span className={styles.brand}>{product.brand}</span>
-              {product.category_name && <span className={styles.category}>{product.category_name}</span>}
+              {(product.category_names || "").split(", ").map((cat: string) => (
+                <span key={cat} className={styles.category}>{cat}</span>
+              ))}
             </div>
 
             <h1 className={styles.name}>{product.name}</h1>
 
-            {(product.flavor || product.weight || product.servings) && (
+            {(product.flavor || product.weight || product.servings || flavors.length > 0) && (
               <div className={styles.specs}>
                 {product.weight && <span className={styles.spec}>⚖️ {product.weight}</span>}
-                {product.flavor && <span className={styles.spec}>🍫 {product.flavor}</span>}
+                {product.flavor && !flavors.length && <span className={styles.spec}>🍫 {product.flavor}</span>}
                 {product.servings && <span className={styles.spec}>🥄 {product.servings} porciones</span>}
+              </div>
+            )}
+
+            {flavors.length > 0 && (
+              <div className={styles.flavorSection}>
+                <label className={styles.flavorLabel}>
+                  Elegí tu sabor <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.flavorGrid}>
+                  {flavors.map((f: string) => (
+                    <button
+                      key={f}
+                      type="button"
+                      className={`${styles.flavorBtn} ${selectedFlavor === f ? styles.flavorBtnActive : ""}`}
+                      onClick={() => setSelectedFlavor(f)}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

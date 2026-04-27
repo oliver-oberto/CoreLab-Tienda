@@ -46,7 +46,7 @@ async function initializeSchema(client: Client) {
       description TEXT NOT NULL,
       price REAL NOT NULL,
       original_price REAL,
-      category_id INTEGER REFERENCES categories(id),
+      category_id INTEGER REFERENCES categories(id), -- Mantener por ahora por compatibilidad
       brand TEXT NOT NULL DEFAULT 'Cellpure',
       stock INTEGER NOT NULL DEFAULT 0,
       image_url TEXT,
@@ -54,9 +54,16 @@ async function initializeSchema(client: Client) {
       featured INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
       weight TEXT,
-      flavor TEXT,
+      flavor TEXT, -- Mantener por ahora
+      flavors TEXT DEFAULT '[]', -- Nuevo campo JSON para múltiples sabores
       servings INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS product_categories (
+      product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+      category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE,
+      PRIMARY KEY (product_id, category_id)
     );
 
     CREATE TABLE IF NOT EXISTS orders (
@@ -80,7 +87,8 @@ async function initializeSchema(client: Client) {
       product_name TEXT NOT NULL,
       product_price REAL NOT NULL,
       quantity INTEGER NOT NULL,
-      subtotal REAL NOT NULL
+      subtotal REAL NOT NULL,
+      selected_flavor TEXT
     );
 
     CREATE TABLE IF NOT EXISTS cart_items (
@@ -88,11 +96,14 @@ async function initializeSchema(client: Client) {
       user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
       product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
       quantity INTEGER NOT NULL DEFAULT 1,
+      selected_flavor TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(user_id, product_id)
+      UNIQUE(user_id, product_id, selected_flavor)
     );
 
     CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+    CREATE INDEX IF NOT EXISTS idx_product_categories_p ON product_categories(product_id);
+    CREATE INDEX IF NOT EXISTS idx_product_categories_c ON product_categories(category_id);
     CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand);
     CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
     CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);

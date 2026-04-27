@@ -85,11 +85,25 @@
   text-overflow: ellipsis;
   transition: color var(--transition);
 }
-.itemName:hover { color: var(--silver); }
+.itemName:hover { color: var(--primary-blue); }
+
+.itemMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .itemPrice {
   font-size: 0.8rem;
-  color: var(--gray-dark);
+  color: var(--dark-blue);
   font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.itemFlavor {
+  font-size: 0.75rem;
+  color: var(--gray-dark);
+  font-style: italic;
 }
 
 .itemControls {

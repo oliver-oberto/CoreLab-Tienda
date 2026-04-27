@@ -9,8 +9,8 @@ function formatPrice(n: number) {
 
 const EMPTY_FORM = {
   name: "", description: "", price: "", original_price: "",
-  category_id: "", brand: "Cellpure", stock: "", image_url: "",
-  weight: "", flavor: "", servings: "", featured: false, active: true,
+  category_ids: [], brand: "Cellpure", stock: "", image_url: "",
+  weight: "", flavor: "", flavors_input: "", servings: "", featured: false, active: true,
 };
 
 export default function AdminProductsPage() {
@@ -47,12 +47,19 @@ export default function AdminProductsPage() {
 
   const openEdit = (product: any) => {
     setEditingId(product.id);
-    const images = (() => { try { return JSON.parse(product.images); } catch { return []; } })();
+    const images = (() => { try { return JSON.parse(product.images || "[]"); } catch { return []; } })();
+    const flavors = (() => { try { return JSON.parse(product.flavors || "[]"); } catch { return []; } })();
+    const categoryIds = product.category_ids ? product.category_ids.split(",").map(Number) : [];
+    
     setForm({
       name: product.name, description: product.description, price: product.price,
-      original_price: product.original_price || "", category_id: product.category_id || "",
+      original_price: product.original_price || "", 
+      category_ids: categoryIds,
       brand: product.brand, stock: product.stock, image_url: product.image_url || "",
-      weight: product.weight || "", flavor: product.flavor || "", servings: product.servings || "",
+      weight: product.weight || "", 
+      flavor: product.flavor || "", 
+      flavors_input: flavors.join(", "),
+      servings: product.servings || "",
       featured: product.featured === 1, active: product.active === 1,
       images: images.join("\n"),
     });
@@ -63,13 +70,18 @@ export default function AdminProductsPage() {
     e.preventDefault();
     setSaving(true);
     const images = form.images ? form.images.split("\n").filter(Boolean) : [];
+    const flavors = form.flavors_input 
+      ? form.flavors_input.split(",").map((s: string) => s.trim()).filter(Boolean) 
+      : [];
+
     const body = {
       ...form,
       price: parseFloat(form.price),
       original_price: form.original_price ? parseFloat(form.original_price) : null,
       stock: parseInt(form.stock),
       servings: form.servings ? parseInt(form.servings) : null,
-      category_id: form.category_id || null,
+      category_ids: form.category_ids,
+      flavors,
       images,
     };
     const url = editingId ? `/api/products/${editingId}` : "/api/products";
@@ -85,6 +97,17 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleCatToggle = (id: number) => {
+    setForm((p: any) => {
+      const current = p.category_ids || [];
+      if (current.includes(id)) {
+        return { ...p, category_ids: current.filter((x: number) => x !== id) };
+      } else {
+        return { ...p, category_ids: [...current, id] };
+      }
+    });
+  };
+
   const handleSaveCat = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!catForm.name) return;
@@ -98,7 +121,7 @@ export default function AdminProductsPage() {
     setSavingCat(false);
     if (res.ok) {
       setCategories(prev => [...prev, data.category].sort((a, b) => a.name.localeCompare(b.name)));
-      setForm((p: any) => ({ ...p, category_id: data.category.id }));
+      handleCatToggle(data.category.id);
       setShowCatModal(false);
       setCatForm({ name: "", icon: "📦" });
       showToast("Categoría creada ✅", "success");
@@ -160,21 +183,22 @@ export default function AdminProductsPage() {
                   <label className="form-label">Precio original (tachado)</label>
                   <input type="number" className="form-input" value={form.original_price} onChange={e => setForm((p: any) => ({ ...p, original_price: e.target.value }))} min="0" placeholder="Opcional" />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Categoría</label>
-                  <div className={styles.categoryControl}>
-                    <select className="form-select" value={form.category_id} onChange={e => setForm((p: any) => ({ ...p, category_id: e.target.value }))} style={{ flex: 1 }}>
-                      <option value="">Sin categoría</option>
-                      {categories.map((c: any) => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
-                    </select>
-                    <button 
-                      type="button" 
-                      className={styles.addQuickBtn} 
-                      onClick={() => setShowCatModal(true)}
-                      title="Nueva categoría rápida"
-                    >
-                      +
-                    </button>
+                <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <label className="form-label">Categorías *</label>
+                    <button type="button" className="btn-text btn-sm" onClick={() => setShowCatModal(true)} style={{ fontSize: '0.7rem', color: 'var(--primary-blue)', fontWeight: 600 }}>+ Nueva categoría</button>
+                  </div>
+                  <div className={styles.categoriesGrid}>
+                    {categories.map((c: any) => (
+                      <label key={c.id} className={styles.categoryItem}>
+                        <input 
+                          type="checkbox" 
+                          checked={(form.category_ids || []).includes(c.id)}
+                          onChange={() => handleCatToggle(c.id)}
+                        />
+                        <span>{c.icon} {c.name}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
                 <div className="form-group">
@@ -182,12 +206,18 @@ export default function AdminProductsPage() {
                   <input className="form-input" value={form.brand} onChange={e => setForm((p: any) => ({ ...p, brand: e.target.value }))} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Stock *</label>
+                  <label className="form-label">Stock Total *</label>
                   <input type="number" className="form-input" value={form.stock} onChange={e => setForm((p: any) => ({ ...p, stock: e.target.value }))} required min="0" />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Sabor</label>
-                  <input className="form-input" value={form.flavor} onChange={e => setForm((p: any) => ({ ...p, flavor: e.target.value }))} placeholder="Chocolate, Vainilla..." />
+                <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                  <label className="form-label">Sabores (separados por coma)</label>
+                  <input 
+                    className="form-input" 
+                    value={form.flavors_input} 
+                    onChange={e => setForm((p: any) => ({ ...p, flavors_input: e.target.value }))} 
+                    placeholder="Chocolate, Vainilla, Frutilla..." 
+                  />
+                  <p style={{ fontSize: '0.7rem', color: 'var(--gray-dark)', marginTop: '0.25rem' }}>Si completás esto, el cliente podrá elegir el sabor al comprar.</p>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Peso / Cantidad</label>

@@ -8,10 +8,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const db = getDb();
     const productRs = await db.execute({
       sql: `
-        SELECT p.*, c.name as category_name, c.slug as category_slug
+        SELECT p.*, 
+               GROUP_CONCAT(c.name, ', ') as category_names,
+               GROUP_CONCAT(c.id, ',') as category_ids,
+               GROUP_CONCAT(c.slug, ',') as category_slugs
         FROM products p
-        LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN product_categories pc ON p.id = pc.product_id
+        LEFT JOIN categories c ON pc.category_id = c.id
         WHERE p.id = ? AND p.active = 1
+        GROUP BY p.id
       `,
       args: [id]
     });
@@ -22,8 +27,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const relatedRs = await db.execute({
       sql: `
         SELECT p.* FROM products p
-        WHERE p.category_id = (SELECT category_id FROM products WHERE id = ?)
+        JOIN product_categories pc ON p.id = pc.product_id
+        WHERE pc.category_id IN (SELECT category_id FROM product_categories WHERE product_id = ?)
           AND p.id != ? AND p.active = 1
+        GROUP BY p.id
         LIMIT 4
       `,
       args: [id, id]
@@ -31,6 +38,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ product, related: relatedRs.rows });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Error al obtener producto" }, { status: 500 });
   }
 }
@@ -44,21 +52,43 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const db = getDb();
     const body = await req.json();
-    const { name, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings, active } = body;
+    const { 
+      name, description, price, original_price, category_ids, 
+      brand, stock, image_url, images, featured, 
+      weight, flavor, flavors, servings, active 
+    } = body;
 
     await db.execute({
       sql: `
         UPDATE products SET
           name = ?, description = ?, price = ?, original_price = ?,
-          category_id = ?, brand = ?, stock = ?, image_url = ?, images = ?,
-          featured = ?, weight = ?, flavor = ?, servings = ?, active = ?
+          brand = ?, stock = ?, image_url = ?, images = ?,
+          featured = ?, weight = ?, flavor = ?, flavors = ?, servings = ?, active = ?
         WHERE id = ?
       `,
-      args: [name, description, price, original_price || null, category_id, brand, stock, image_url, JSON.stringify(images || []), featured ? 1 : 0, weight || null, flavor || null, servings || null, active !== false ? 1 : 0, id]
+      args: [
+        name, description, price, original_price || null, 
+        brand, stock, image_url, JSON.stringify(images || []), 
+        featured ? 1 : 0, weight || null, flavor || null,
+        JSON.stringify(flavors || []), servings || null, 
+        active !== false ? 1 : 0, id
+      ]
     });
+
+    // Actualizar categorías: Borrar y re-insertar
+    await db.execute({ sql: "DELETE FROM product_categories WHERE product_id = ?", args: [id] });
+    if (Array.isArray(category_ids)) {
+      for (const catId of category_ids) {
+        await db.execute({
+          sql: "INSERT INTO product_categories (product_id, category_id) VALUES (?, ?)",
+          args: [id, catId]
+        });
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Error al actualizar producto" }, { status: 500 });
   }
 }
