@@ -39,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className={styles.sidebarNav}>
           <Link href="/admin" className={styles.navItem} id="admin-nav-dash">📊 Dashboard</Link>
           <Link href="/admin/products" className={styles.navItem} id="admin-nav-products">📦 Productos</Link>
+          <Link href="/admin/categories" className={styles.navItem} id="admin-nav-categories">🏷️ Categorías</Link>
           <Link href="/admin/orders" className={styles.navItem} id="admin-nav-orders">🛒 Pedidos</Link>
           <Link href="/admin/users" className={styles.navItem} id="admin-nav-users">👥 Usuarios</Link>
         </nav>
