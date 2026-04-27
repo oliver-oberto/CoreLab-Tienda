@@ -65,10 +65,6 @@ function LoginContent() {
           ¿No tenés cuenta?{" "}
           <Link href="/auth/register" className={styles.switchLink} id="go-register-link">Creá una acá</Link>
         </p>
-
-        <div className={styles.adminHint}>
-          <p>Admin demo: <code>admin@corelab.com</code> / <code>admin123</code></p>
-        </div>
       </div>
     </div>
   );
