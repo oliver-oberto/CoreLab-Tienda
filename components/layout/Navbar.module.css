@@ -314,9 +314,9 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gray);
-  border-bottom: 1px solid var(--border);
-  transition: color var(--transition);
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition);
 }
 
 .mobileLink:last-child {
