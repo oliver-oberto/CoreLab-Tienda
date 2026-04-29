@@ -355,3 +355,15 @@
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .logoSub {
+    display: none;
+  }
+  .actions {
+    gap: 0.4rem;
+  }
+  .userBtn {
+    padding: 0.4rem 0.5rem;
+  }
+}

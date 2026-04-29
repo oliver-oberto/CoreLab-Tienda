@@ -148,6 +148,28 @@
 .orderPayMethod strong { color: var(--dark-blue); }
 
 @media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
   .formGrid { grid-template-columns: 1fr; }
-  .orderHeader { flex-wrap: wrap; }
+  .orderHeader { 
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .orderMeta {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .tabs {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .tab {
+    flex: 1;
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+  }
 }

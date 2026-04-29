@@ -350,8 +350,37 @@
 }
 
 @media (max-width: 900px) {
+  .heroSection {
+    padding-top: 100px;
+  }
+
   .heroContent {
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .heroText {
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .heroDesc {
+    margin: 0 auto;
+  }
+
+  .heroBtns {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .heroBtns a, .heroBtns button {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .heroStats {
+    justify-content: center;
+    margin-top: 2rem;
   }
 
   .heroImage {
@@ -360,15 +389,74 @@
 
   .bannerInner {
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .bannerText {
+    align-items: center;
+  }
+
+  .bannerDesc {
+    margin: 0 auto;
   }
 
   .bannerBrands {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 
 @media (max-width: 600px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroStats {
+    flex-direction: column;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .stat {
+    align-items: center;
+    text-align: center;
+  }
+
+  .statNum {
+    font-size: 2.2rem;
+  }
+
+  .statLabel {
+    font-size: 0.8rem;
+  }
+
+  .statDivider {
+    display: none;
+  }
+
   .trustItems {
-    gap: 1.5rem;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .trustItem {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .trustIcon {
+    font-size: 2rem;
+  }
+
+  .ctaBtns {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ctaBtns a, .ctaBtns button {
+    width: 100%;
   }
 }
