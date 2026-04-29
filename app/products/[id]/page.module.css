@@ -371,11 +371,14 @@
 
   .actions {
     width: 100%;
+    max-width: 400px; /* Optional: limit width on larger phones/tablets */
+    margin: 0 auto;
     align-items: center;
   }
 
   .actions button, .actions a {
     width: 100%;
+    margin-bottom: 0.5rem;
   }
 
   .description {
