@@ -383,8 +383,8 @@
   }
 
   .mainImage {
+    width: 100%;
     margin: 0 auto;
-    max-width: 100%;
   }
 }
 
@@ -397,6 +397,9 @@
   }
   .name {
     font-size: 1.8rem;
+  }
+  .mainImage {
+    width: 100%;
   }
   .trust { padding: 1rem; }
 }
