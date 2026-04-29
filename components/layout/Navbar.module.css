@@ -357,13 +357,19 @@
 }
 
 @media (max-width: 480px) {
-  .logoSub {
+  .logoText {
     display: none;
   }
   .actions {
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
   .userBtn {
     padding: 0.4rem 0.5rem;
+  }
+  /* Login button fix */
+  .actions a.btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
   }
 }
