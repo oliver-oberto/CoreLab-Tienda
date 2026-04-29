@@ -253,15 +253,32 @@
   box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 
-.filterToggle {
-  margin-left: auto;
-  border-color: var(--primary-blue);
+.statsMobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.mobileFilterBtn {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  background: white;
+  border: 1px solid var(--primary-blue);
   color: var(--primary-blue);
+  border-radius: 20px;
+  font-size: 0.75rem;
   font-weight: 700;
-  position: sticky;
-  right: 0;
-  background: var(--bg-card);
-  z-index: 5;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.mobileFilterBtn:hover {
+  background: var(--primary-blue);
+  color: white;
 }
 
 @media (max-width: 900px) {
@@ -280,6 +297,10 @@
   }
 
   .sidebarVisible {
+    display: flex;
+  }
+
+  .mobileFilterBtn {
     display: flex;
   }
 

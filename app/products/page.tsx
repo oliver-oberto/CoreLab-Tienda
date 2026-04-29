@@ -75,7 +75,18 @@ function ProductsContent() {
             <span className="section-label">Tienda</span>
             <h1 className={styles.title}>Catálogo de Productos</h1>
             {!loading && (
-              <p className={styles.resultCount}>{total} producto{total !== 1 ? "s" : ""} encontrado{total !== 1 ? "s" : ""}</p>
+              <div className={styles.statsMobile}>
+                <p className={styles.resultCount}>
+                  {total} producto{total !== 1 ? "s" : ""}
+                </p>
+                <button 
+                  className={styles.mobileFilterBtn}
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                  {showMobileFilters ? "Cerrar Filtros" : "Filtrar"}
+                </button>
+              </div>
             )}
           </div>
 
@@ -112,13 +123,6 @@ function ProductsContent() {
               {cat.icon} {cat.name}
             </button>
           ))}
-          <button 
-            className={`${styles.mobileCatItem} ${styles.filterToggle} ${showMobileFilters ? styles.mobileCatActive : ""}`}
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-            Filtrar
-          </button>
         </div>
 
         <div className={styles.layout}>
