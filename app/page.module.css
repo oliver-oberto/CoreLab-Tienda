@@ -413,26 +413,30 @@
   }
 
   .heroStats {
-    flex-direction: column;
-    gap: 2.5rem;
+    flex-direction: row;
+    gap: 1rem;
     align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 
   .stat {
     align-items: center;
     text-align: center;
+    flex: 1;
   }
 
   .statNum {
-    font-size: 2.2rem;
+    font-size: 1.4rem;
   }
 
   .statLabel {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
   }
 
   .statDivider {
-    display: none;
+    display: block;
+    height: 30px;
   }
 
   .trustItems {
