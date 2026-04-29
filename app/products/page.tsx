@@ -92,6 +92,25 @@ function ProductsContent() {
           </form>
         </div>
 
+        {/* Mobile quick filters */}
+        <div className={styles.mobileCategories}>
+          <button
+            className={`${styles.mobileCatItem} ${!category ? styles.mobileCatActive : ""}`}
+            onClick={() => updateParam("category", "")}
+          >
+            Todos
+          </button>
+          {categories.map((cat: any) => (
+            <button
+              key={cat.slug}
+              className={`${styles.mobileCatItem} ${category === cat.slug ? styles.mobileCatActive : ""}`}
+              onClick={() => updateParam("category", cat.slug)}
+            >
+              {cat.icon} {cat.name}
+            </button>
+          ))}
+        </div>
+
         <div className={styles.layout}>
           {/* Sidebar filters */}
           <aside className={styles.sidebar} id="products-sidebar">
