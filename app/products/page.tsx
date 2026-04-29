@@ -75,18 +75,9 @@ function ProductsContent() {
             <span className="section-label">Tienda</span>
             <h1 className={styles.title}>Catálogo de Productos</h1>
             {!loading && (
-              <div className={styles.statsMobile}>
-                <p className={styles.resultCount}>
-                  {total} producto{total !== 1 ? "s" : ""}
-                </p>
-                <button 
-                  className={styles.mobileFilterBtn}
-                  onClick={() => setShowMobileFilters(!showMobileFilters)}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-                  {showMobileFilters ? "Cerrar Filtros" : "Filtrar"}
-                </button>
-              </div>
+              <p className={styles.resultCount}>
+                {total} producto{total !== 1 ? "s" : ""}
+              </p>
             )}
           </div>
 
@@ -104,6 +95,17 @@ function ProductsContent() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             </button>
           </form>
+        </div>
+
+        {/* Mobile Filter Button (Relocated) */}
+        <div className={styles.mobileFilterWrapper}>
+          <button 
+            className={styles.mobileFilterBtn}
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+            {showMobileFilters ? "Ocultar Filtros" : "Filtrar Resultados"}
+          </button>
         </div>
 
         {/* Mobile quick filters */}
