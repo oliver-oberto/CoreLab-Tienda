@@ -11,6 +11,7 @@ function formatPrice(n: number) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [stats, setStats] = useState<any>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -31,22 +32,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className={styles.adminLayout}>
+      {/* Mobile Toggle */}
+      <button 
+        className={styles.mobileToggle} 
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle Menu"
+      >
+        {menuOpen ? "✕" : "☰"}
+      </button>
+
       {/* Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ""}`}>
         <div className={styles.sidebarHeader}>
           <span className={styles.sidebarTitle}>PANEL ADMIN</span>
         </div>
         <nav className={styles.sidebarNav}>
-          <Link href="/admin" className={styles.navItem} id="admin-nav-dash">📊 Dashboard</Link>
-          <Link href="/admin/products" className={styles.navItem} id="admin-nav-products">📦 Productos</Link>
-          <Link href="/admin/categories" className={styles.navItem} id="admin-nav-categories">🏷️ Categorías</Link>
-          <Link href="/admin/orders" className={styles.navItem} id="admin-nav-orders">🛒 Pedidos</Link>
-          <Link href="/admin/users" className={styles.navItem} id="admin-nav-users">👥 Usuarios</Link>
+          <Link href="/admin" className={styles.navItem} onClick={() => setMenuOpen(false)}>📊 Dashboard</Link>
+          <Link href="/admin/products" className={styles.navItem} onClick={() => setMenuOpen(false)}>📦 Productos</Link>
+          <Link href="/admin/categories" className={styles.navItem} onClick={() => setMenuOpen(false)}>🏷️ Categorías</Link>
+          <Link href="/admin/orders" className={styles.navItem} onClick={() => setMenuOpen(false)}>🛒 Pedidos</Link>
+          <Link href="/admin/users" className={styles.navItem} onClick={() => setMenuOpen(false)}>👥 Usuarios</Link>
         </nav>
         <div className={styles.sidebarFooter}>
           <Link href="/" className={styles.backLink}>← Volver a la tienda</Link>
         </div>
       </aside>
+
+      {/* Overlay */}
+      {menuOpen && <div className={styles.overlay} onClick={() => setMenuOpen(false)} />}
 
       {/* Main */}
       <div className={styles.main}>
