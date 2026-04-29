@@ -253,13 +253,39 @@
   box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 
+.filterToggle {
+  margin-left: auto;
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  font-weight: 700;
+  position: sticky;
+  right: 0;
+  background: var(--bg-card);
+  z-index: 5;
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
   }
 
   .sidebar {
-    display: none; /* Hide the vertical sidebar on mobile */
+    display: none; /* Hide vertical sidebar on mobile by default */
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
+    animation: slideIn 0.3s ease;
+  }
+
+  .sidebarVisible {
+    display: flex;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .mobileCategories {

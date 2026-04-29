@@ -22,6 +22,8 @@ function ProductsContent() {
 
   const [searchInput, setSearchInput] = useState(search);
 
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -59,6 +61,7 @@ function ProductsContent() {
   const clearFilters = () => {
     setSearchInput("");
     router.push("/products");
+    setShowMobileFilters(false);
   };
 
   const hasFilters = category || search || minPrice || maxPrice;
@@ -109,11 +112,18 @@ function ProductsContent() {
               {cat.icon} {cat.name}
             </button>
           ))}
+          <button 
+            className={`${styles.mobileCatItem} ${styles.filterToggle} ${showMobileFilters ? styles.mobileCatActive : ""}`}
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+            Filtrar
+          </button>
         </div>
 
         <div className={styles.layout}>
           {/* Sidebar filters */}
-          <aside className={styles.sidebar} id="products-sidebar">
+          <aside className={`${styles.sidebar} ${showMobileFilters ? styles.sidebarVisible : ""}`} id="products-sidebar">
             <div className={styles.filterGroup}>
               <h3 className={styles.filterTitle}>Categorías</h3>
               <ul className={styles.filterList}>
