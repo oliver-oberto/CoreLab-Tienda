@@ -301,6 +301,8 @@
 
   .sidebarVisible {
     display: flex;
+    position: relative !important;
+    top: 0 !important;
   }
 
   .mobileFilterWrapper {
