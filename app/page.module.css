@@ -194,14 +194,17 @@
 .categoryGrid::-webkit-scrollbar {
   height: 6px;
 }
+
 .categoryGrid::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 10px;
 }
+
 .categoryGrid::-webkit-scrollbar-thumb {
   background: rgba(0, 255, 255, 0.1);
   border-radius: 10px;
 }
+
 .categoryGrid::-webkit-scrollbar-thumb:hover {
   background: var(--primary-blue);
 }
@@ -346,8 +349,7 @@
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
-}
+@media (max-width: 1200px) {}
 
 @media (max-width: 900px) {
   .heroSection {
@@ -373,7 +375,8 @@
     width: 100%;
   }
 
-  .heroBtns a, .heroBtns button {
+  .heroBtns a,
+  .heroBtns button {
     flex: 1;
     min-width: 200px;
   }
@@ -410,7 +413,7 @@
 @media (max-width: 600px) {
   .hero {
     min-height: auto;
-    padding: 5rem 0 3rem;
+    padding: 2rem 0 3rem;
   }
 
   .heroText {
@@ -430,7 +433,8 @@
     width: 100%;
   }
 
-  .heroBtns a, .heroBtns button {
+  .heroBtns a,
+  .heroBtns button {
     width: 100%;
     min-width: unset;
     text-align: center;
@@ -500,7 +504,8 @@
     width: 100%;
   }
 
-  .ctaBtns a, .ctaBtns button {
+  .ctaBtns a,
+  .ctaBtns button {
     width: 100%;
   }
 
