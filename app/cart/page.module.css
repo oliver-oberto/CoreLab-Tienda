@@ -14,7 +14,7 @@
 .emptyTitle {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 .emptyDesc { color: var(--gray); }
 
@@ -27,7 +27,7 @@
 .title {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 .count {
   font-family: var(--font-mono);
@@ -79,7 +79,7 @@
   font-family: var(--font-primary);
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--white);
+  color: var(--dark-blue);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,7 +131,7 @@
   cursor: pointer;
   border: none;
 }
-.qtyBtn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: var(--white); }
+.qtyBtn:hover:not(:disabled) { background: var(--light-gray); color: var(--dark-blue); }
 .qtyBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 .qtyVal {
   min-width: 36px;
@@ -139,14 +139,14 @@
   font-family: var(--font-primary);
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 
 .itemSubtotal {
   font-family: var(--font-primary);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--dark-blue);
   min-width: 80px;
   text-align: right;
 }
@@ -180,7 +180,7 @@
 .summaryTitle {
   font-family: var(--font-primary);
   font-size: 1.1rem;
-  color: var(--white);
+  color: var(--dark-blue);
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border);
 }
@@ -208,7 +208,7 @@
   font-family: var(--font-primary);
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 
 .payMethods { padding-top: 0.5rem; }
@@ -241,6 +241,12 @@
   .summary { position: static; }
 }
 @media (max-width: 600px) {
-  .item { flex-wrap: wrap; }
+  .item { flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+  .itemImage { width: 64px; height: 64px; }
   .itemControls { width: 100%; justify-content: space-between; }
+  .itemName { white-space: normal; }
+  .header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .title { font-size: 1.5rem; }
+  .summary { padding: 1.25rem; }
+  .payIcons { flex-direction: column; align-items: center; }
 }

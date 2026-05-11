@@ -591,6 +591,22 @@ h4 {
   .section {
     padding: 3rem 0;
   }
+
+  .btn-lg {
+    padding: 0.85rem 1.75rem;
+    font-size: 0.95rem;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .toast {
+    min-width: auto;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -603,5 +619,30 @@ h4 {
 
   .container {
     padding: 0 1rem;
+  }
+
+  .btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .whatsapp-float {
+    width: 48px;
+    height: 48px;
+    bottom: 1.25rem;
+    left: 1.25rem;
   }
 }

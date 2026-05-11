@@ -16,11 +16,11 @@
   margin-bottom: 0.75rem;
   transition: color var(--transition);
 }
-.back:hover { color: var(--white); }
+.back:hover { color: var(--dark-blue); }
 .title {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 
 .layout {
@@ -41,7 +41,7 @@
   font-family: var(--font-primary);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--dark-blue);
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
@@ -80,7 +80,7 @@
   font-family: var(--font-primary);
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 .payDesc { font-size: 0.78rem; color: var(--gray-dark); }
 .payRadio {
@@ -122,7 +122,7 @@
   color: var(--gray);
 }
 .bankRow:last-of-type { border-bottom: none; }
-.bankRow strong { color: var(--white); font-family: var(--font-mono); }
+.bankRow strong { color: var(--dark-blue); font-family: var(--font-mono); }
 
 /* Summary */
 .summary {
@@ -139,7 +139,7 @@
 .summaryTitle {
   font-family: var(--font-primary);
   font-size: 1.1rem;
-  color: var(--white);
+  color: var(--dark-blue);
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
 }
@@ -151,7 +151,7 @@
   gap: 0.5rem;
 }
 .summaryItemName { font-size: 0.82rem; color: var(--gray); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.summaryItemPrice { font-size: 0.82rem; color: var(--white); font-family: var(--font-mono); flex-shrink: 0; }
+.summaryItemPrice { font-size: 0.82rem; color: var(--dark-blue); font-family: var(--font-mono); flex-shrink: 0; }
 .divider { height: 1px; background: var(--border); }
 .summaryRow {
   display: flex;
@@ -164,7 +164,7 @@
   justify-content: space-between;
   font-family: var(--font-primary);
   font-size: 1.2rem;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 .totalRow strong { color: var(--silver); }
 .secureNote {
@@ -200,7 +200,7 @@
 .confirmedTitle {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--white);
+  color: var(--dark-blue);
 }
 .confirmedDesc { color: var(--gray); font-size: 0.95rem; }
 .confirmedTotal {
@@ -226,7 +226,7 @@
 .bankTitle {
   font-family: var(--font-primary);
   font-size: 1rem;
-  color: var(--white);
+  color: var(--dark-blue);
   margin-bottom: 0.25rem;
 }
 .bankNote {
@@ -239,4 +239,16 @@
   .layout { grid-template-columns: 1fr; }
   .summary { position: static; }
   .formGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .title { font-size: 1.5rem; }
+  .formBlock { padding: 1.25rem; }
+  .confirmedCard { padding: 2rem 1.25rem; }
+  .confirmedTitle { font-size: 1.5rem; }
+  .bankInfo { padding: 1rem; }
+  .payMethod { padding: 0.75rem 1rem; gap: 0.75rem; }
+  .payIcon { font-size: 1.25rem; }
+  .summary { padding: 1.25rem; }
+  .header { margin-bottom: 1.5rem; }
 }
