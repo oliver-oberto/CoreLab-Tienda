@@ -624,6 +624,8 @@ h4 {
   .btn {
     padding: 0.65rem 1.25rem;
     font-size: 0.85rem;
+    white-space: normal;
+    text-align: center;
   }
 
   .btn-lg {

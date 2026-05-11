@@ -112,7 +112,7 @@ export default function CheckoutPage() {
                 href={`https://wa.me/543518792797?text=Hola!%20Hice%20mi%20pedido%20%23${confirmed.orderId}%20por%20${formatPrice(confirmed.total)}%20y%20adjunto%20el%20comprobante.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary btn-lg"
+                className="btn btn-primary btn-lg btn-full"
                 id="confirmed-wa-btn"
               >
                 Enviar comprobante por WhatsApp
@@ -129,14 +129,14 @@ export default function CheckoutPage() {
                 href={`https://wa.me/543518792797?text=Hola!%20Hice%20mi%20pedido%20%23${confirmed.orderId}%20y%20elegí%20pago%20en%20efectivo.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary btn-lg"
+                className="btn btn-primary btn-lg btn-full"
                 id="confirmed-cash-wa-btn"
               >
                 💬 Contactar por WhatsApp
               </a>
             </div>
           )}
-          <Link href="/products" className="btn btn-outline" id="confirmed-shop-more-btn">
+          <Link href="/products" className="btn btn-outline btn-full" id="confirmed-shop-more-btn">
             Seguir comprando
           </Link>
         </div>
