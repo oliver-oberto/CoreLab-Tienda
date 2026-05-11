@@ -148,9 +148,10 @@
 }
 
 .flavorBtn:hover {
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
-  background: rgba(0,255,255,0.02);
+  background: var(--dark-blue);
+  border-color: var(--dark-blue);
+  color: white;
+  transform: translateY(-2px);
 }
 
 .flavorBtnActive {
