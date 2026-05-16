@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "dcdn-us.mitiendanube.com",
       },
+      {
+        protocol: "https",
+        hostname: "acdn-us.mitiendanube.com",
+      },
     ],
   },
   serverExternalPackages: ["better-sqlite3"],
