@@ -37,10 +37,16 @@ export async function POST(req: NextRequest) {
 
     // Formatting history for Gemini SDK
     // The SDK expects { role: "user" | "model", parts: [{ text: string }] }
-    const formattedHistory = history.map((msg: any) => ({
+    let formattedHistory = history.map((msg: any) => ({
       role: msg.role === "assistant" ? "model" : "user",
       parts: [{ text: msg.content }],
     }));
+
+    // Gemini requires the history to start with a 'user' message.
+    // If the first message is 'model' (like our frontend initial greeting), we drop it.
+    if (formattedHistory.length > 0 && formattedHistory[0].role === "model") {
+      formattedHistory.shift();
+    }
 
     // Start chat with system prompt in history or as a system instruction (supported in 1.5)
     const chat = model.startChat({
