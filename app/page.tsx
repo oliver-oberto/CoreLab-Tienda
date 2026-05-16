@@ -177,12 +177,17 @@ export default function HomePage() {
       <section className={styles.ctaSection}>
         <div className="container">
           <div className={styles.ctaInner}>
-            <h2 className={styles.ctaTitle}>¿Listo para transformar tu rendimiento?</h2>
-            <p className={styles.ctaDesc}>Consultanos por WhatsApp y te ayudamos a elegir el suplemento ideal.</p>
+            <h2 className={styles.ctaTitle}>¿No sabés qué suplemento elegir?</h2>
+            <p className={styles.ctaDesc}>Nuestro asesor con IA analiza tu objetivo y te recomienda el producto ideal en segundos. Gratis, sin registro.</p>
             <div className={styles.ctaBtns}>
-              <Link href="/products" className="btn btn-primary btn-lg" id="cta-products-btn">Ir al catálogo</Link>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('openCoreLabChat'))}
+                className="btn btn-primary btn-lg"
+              >
+                HABLAR CON EL ASESOR
+              </button>
               <a href="https://wa.me/543518792797" target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-lg" id="cta-wa-btn">
-                💬 Escribirnos
+                O escribinos por WhatsApp
               </a>
             </div>
           </div>
