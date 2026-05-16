@@ -92,7 +92,7 @@ export default function ChatWidget() {
         ...newHistory,
         {
           role: "assistant",
-          content: "Uy, hubo un problema conectando con el servidor. Podés consultarnos directamente por WhatsApp 😊",
+          content: "Hubo un problema al conectar. Podés escribirnos por [WhatsApp →](https://wa.me/543518792797)",
           isError: true,
         },
       ]);
@@ -135,7 +135,7 @@ export default function ChatWidget() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
-              CoreLab Asesor
+              CORELAB ASESOR
             </div>
             <button className={styles.closeBtn} onClick={handleClose} aria-label="Cerrar chat">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -190,7 +190,7 @@ export default function ChatWidget() {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Escribe un mensaje..."
+              placeholder="Escribí tu consulta..."
               className={styles.inputField}
               disabled={isTyping}
             />
