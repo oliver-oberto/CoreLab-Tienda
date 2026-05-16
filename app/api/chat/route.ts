@@ -33,7 +33,10 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_PROMPT
+    });
 
     // Formatting history for Gemini SDK
     // The SDK expects { role: "user" | "model", parts: [{ text: string }] }
@@ -48,10 +51,9 @@ export async function POST(req: NextRequest) {
       formattedHistory.shift();
     }
 
-    // Start chat with system prompt in history or as a system instruction (supported in 1.5)
+    // Start chat
     const chat = model.startChat({
       history: formattedHistory,
-      systemInstruction: SYSTEM_PROMPT,
     });
 
     const result = await chat.sendMessage(message);
