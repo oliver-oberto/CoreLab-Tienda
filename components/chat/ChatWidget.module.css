@@ -9,24 +9,29 @@
 }
 
 .floatingBtn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #000;
+  width: 150px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #1B2A4A;
   color: #fff;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: transform 0.3s ease, background-color 0.3s ease;
   z-index: 1001;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
 }
 
 .floatingBtn:hover {
-  transform: scale(1.05);
-  background-color: #333;
+  transform: scale(1.02);
+  background-color: #243660;
 }
 
 .pulse {
@@ -35,30 +40,30 @@
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 0 rgba(27, 42, 74, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+    box-shadow: 0 0 0 15px rgba(27, 42, 74, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    box-shadow: 0 0 0 0 rgba(27, 42, 74, 0);
   }
 }
 
 .chatPanel {
   position: absolute;
-  bottom: 80px;
+  bottom: 64px;
   right: 0;
   width: 380px;
   height: 500px;
   background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid #D0D8E8;
+  border-radius: 6px;
+  box-shadow: 0 8px 32px rgba(27, 42, 74, 0.15);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.3s ease-out;
-  border: 1px solid #eaeaea;
 }
 
 @keyframes slideUp {
@@ -73,7 +78,7 @@
 }
 
 .header {
-  background-color: #000;
+  background-color: #1B2A4A;
   color: #fff;
   padding: 16px;
   display: flex;
@@ -83,7 +88,9 @@
 
 .headerTitle {
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -131,7 +138,6 @@
 .messageBubble {
   max-width: 80%;
   padding: 10px 14px;
-  border-radius: 12px;
   font-size: 0.95rem;
   line-height: 1.4;
   animation: fadeIn 0.3s ease-out;
@@ -145,21 +151,28 @@
 }
 
 .user .messageBubble {
-  background-color: #000;
-  color: #fff;
-  border-bottom-right-radius: 2px;
+  background-color: #1B2A4A;
+  color: #FFFFFF;
+  border-radius: 12px 4px 4px 12px;
 }
 
 .bot .messageBubble {
-  background-color: #e5e5e5;
-  color: #000;
-  border-bottom-left-radius: 2px;
+  background-color: #F0F3F8;
+  color: #1B2A4A;
+  border-radius: 4px 12px 12px 4px;
 }
 
 .errorBubble {
-  background-color: #fee2e2 !important;
-  color: #991b1b !important;
-  border: 1px solid #f87171;
+  background-color: #FFF8E7 !important;
+  color: #7A5C00 !important;
+  border: none !important;
+  border-left: 3px solid #D4A017 !important;
+  border-radius: 4px !important;
+}
+
+.errorBubble a {
+  color: #1B2A4A !important;
+  text-decoration: underline;
 }
 
 @keyframes fadeIn {
@@ -181,18 +194,21 @@
 }
 
 .quickReplyBtn {
-  background-color: #fff;
-  border: 1px solid #000;
-  color: #000;
+  background-color: transparent;
+  border: 1.5px solid #1B2A4A;
+  color: #1B2A4A;
   padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.85rem;
+  border-radius: 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .quickReplyBtn:hover {
-  background-color: #000;
+  background-color: #1B2A4A;
   color: #fff;
 }
 
@@ -205,7 +221,7 @@
 .typingDot {
   width: 6px;
   height: 6px;
-  background-color: #666;
+  background-color: #1B2A4A;
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out both;
 }
@@ -229,24 +245,28 @@
 .inputField {
   flex: 1;
   padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
+  border: 1.5px solid #1B2A4A;
+  border-radius: 3px;
   outline: none;
   font-size: 0.95rem;
   transition: border-color 0.2s;
 }
 
+.inputField::placeholder {
+  color: #a0aabf;
+}
+
 .inputField:focus {
-  border-color: #000;
+  border-color: #1B2A4A;
 }
 
 .sendBtn {
-  background-color: #000;
+  background-color: #1B2A4A;
   color: #fff;
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border-radius: 3px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,7 +280,7 @@
 }
 
 .sendBtn:hover:not(:disabled) {
-  background-color: #333;
+  background-color: #243660;
 }
 
 /* Mobile Full Screen */
@@ -274,6 +294,7 @@
     width: 100%;
     height: 100%;
     border-radius: 0;
+    border: none;
     z-index: 1002; /* Above everything */
   }
 
