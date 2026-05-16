@@ -12,14 +12,15 @@ type Message = {
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "¡Hola! Soy tu asesor de CoreLab. ¿En qué te puedo ayudar hoy?",
+  content: "¡Hola! Soy tu asesor de CoreLab. ¿Qué estás buscando mejorar?",
 };
 
 const QUICK_REPLIES = [
-  "Quiero ganar músculo",
-  "Quiero bajar de peso",
-  "Quiero más energía para entrenar",
-  "No sé qué necesito",
+  "Rendimiento deportivo",
+  "Salud general",
+  "Piel y articulaciones",
+  "Sueño y estrés",
+  "No sé bien, necesito orientación",
 ];
 
 export default function ChatWidget() {
