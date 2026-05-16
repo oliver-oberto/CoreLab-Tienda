@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 const SYSTEM_PROMPT = `
 Sos el asesor de suplementos de CoreLab, una tienda argentina de suplementos deportivos. 
@@ -27,43 +27,38 @@ export async function POST(req: NextRequest) {
   try {
     const { history, message } = await req.json();
 
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_key_for_testing") {
-      // Simulate failure for dummy key or missing key to trigger the fallback
+    if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === "dummy_key_for_testing") {
       throw new Error("Missing or invalid API key");
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash-lite",
-      systemInstruction: {
-        role: "system",
-        parts: [{ text: SYSTEM_PROMPT }]
-      }
-    });
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-    // Formatting history for Gemini SDK
-    // The SDK expects { role: "user" | "model", parts: [{ text: string }] }
-    let formattedHistory = history.map((msg: any) => ({
-      role: msg.role === "assistant" ? "model" : "user",
-      parts: [{ text: msg.content }],
+    // Formatting history for Groq SDK
+    // The SDK expects { role: "system" | "user" | "assistant", content: string }
+    const formattedHistory = history.map((msg: any) => ({
+      role: msg.role === "assistant" ? "assistant" : "user",
+      content: msg.content,
     }));
 
-    // Gemini requires the history to start with a 'user' message.
-    // If the first message is 'model' (like our frontend initial greeting), we drop it.
-    if (formattedHistory.length > 0 && formattedHistory[0].role === "model") {
-      formattedHistory.shift();
-    }
+    // Groq doesn't require us to shift the first 'assistant' message if we want to provide it as context, 
+    // but just in case, we'll keep the history clean. 
+    // Actually, Groq handles alternating messages just fine. 
+    // We just prepend the system prompt to the messages array.
+    const messages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...formattedHistory,
+      { role: "user", content: message } // add the current message to the end
+    ];
 
-    // Start chat
-    const chat = model.startChat({
-      history: formattedHistory,
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: messages as any,
+      max_tokens: 1000,
     });
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+    const reply = response.choices[0]?.message?.content || "";
 
-    return NextResponse.json({ success: true, text });
+    return NextResponse.json({ success: true, text: reply });
   } catch (error) {
     console.error("Chat API Error:", error);
     // Triggers the fallback message on the frontend
