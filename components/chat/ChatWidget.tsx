@@ -16,10 +16,10 @@ const INITIAL_MESSAGE: Message = {
 };
 
 const QUICK_REPLIES = [
-  "Rendimiento deportivo",
-  "Salud general",
-  "Piel y articulaciones",
-  "Sueño y estrés",
+  "Mejorar mi rendimiento deportivo",
+  "Cuidar mi piel y articulaciones",
+  "Salud general y antienvejecimiento",
+  "Dormir mejor o reducir el estrés",
   "No sé bien, necesito orientación",
 ];
 
