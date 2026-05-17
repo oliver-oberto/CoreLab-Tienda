@@ -97,14 +97,18 @@ export default function ChatWidget() {
     setIsTyping(true);
 
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          history: messages, // Send previous history
-          message: text,     // Send new message
+      // Run the API call and a minimum delay in parallel
+      const [res] = await Promise.all([
+        fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            history: messages,
+            message: text,
+          }),
         }),
-      });
+        new Promise((resolve) => setTimeout(resolve, 1200)), // minimum typing delay
+      ]);
 
       const data = await res.json();
 

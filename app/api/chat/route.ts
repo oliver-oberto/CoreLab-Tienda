@@ -62,6 +62,7 @@ REGLAS DE CONVERSACIÓN:
 - Si dos productos son similares, explicá la diferencia clave (ej: cápsulas vs polvo, con o sin colágeno)
 - Al final de cada recomendación, ofrecé continuar por WhatsApp: https://wa.me/543518792797
 - No inventes productos ni ingredientes que no estén en este catálogo
+- IMPORTANTE: Respondé siempre de forma breve y directa. Máximo 3-4 oraciones por respuesta. Nada de listas largas ni párrafos extensos. El cliente tiene que poder leerlo de un vistazo.
 `;
 
 export async function POST(req: NextRequest) {
@@ -94,7 +95,7 @@ export async function POST(req: NextRequest) {
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: messages as any,
-      max_tokens: 1000,
+      max_tokens: 400,
     });
 
     const reply = response.choices[0]?.message?.content || "";
