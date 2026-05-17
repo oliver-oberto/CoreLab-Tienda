@@ -11,6 +11,8 @@ function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR", { minimumFractionDigits: 0 });
 }
 
+const FREE_SHIPPING_THRESHOLD = 60000;
+
 const PAYMENT_METHODS = [
   {
     id: "efectivo",
@@ -58,8 +60,8 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState<null | { orderId: number; total: number }>(null);
 
-  const shipping = total > 15000 ? 0 : 1500;
-  const grandTotal = total + shipping;
+  const freeShipping = total >= FREE_SHIPPING_THRESHOLD;
+  const grandTotal = total; // shipping coordinated separately when not free
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -257,9 +259,19 @@ export default function CheckoutPage() {
               <div className={styles.divider} />
               <div className={styles.summaryRow}><span>Subtotal</span><span>{formatPrice(total)}</span></div>
               <div className={styles.summaryRow}>
-                <span>Envío</span>
-                <span>{shipping === 0 ? <span style={{ color: "var(--success)" }}>Gratis</span> : formatPrice(shipping)}</span>
+                <span>Envío (Córdoba)</span>
+                <span>
+                  {freeShipping
+                    ? <span style={{ color: "var(--success)", fontWeight: 600 }}>🎉 Gratis</span>
+                    : <span style={{ color: "var(--dark-blue)", fontWeight: 600 }}>A coordinar</span>
+                  }
+                </span>
               </div>
+              {!freeShipping && (
+                <p style={{ fontSize: "0.75rem", color: "var(--gray-dark)", marginTop: "-0.25rem", marginBottom: "0.5rem", lineHeight: 1.4 }}>
+                  🚚 El costo de envío se coordina con el vendedor. Comprá {formatPrice(FREE_SHIPPING_THRESHOLD - total)} más para envío gratis.
+                </p>
+              )}
               <div className={styles.divider} />
               <div className={styles.totalRow}><span>Total a pagar</span><strong>{formatPrice(grandTotal)}</strong></div>
 
