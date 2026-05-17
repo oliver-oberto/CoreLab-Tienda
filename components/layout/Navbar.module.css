@@ -357,11 +357,6 @@
   .visibleMobile {
     display: inline;
   }
-  
-  .navbar {
-    padding: 0 12px;
-  }
-
   .navLinks {
     display: none;
   }
@@ -389,7 +384,7 @@
   .logo {
     transform: scale(0.82);
     transform-origin: left center;
-    margin-left: 4px;
+    max-width: 130px;
   }
 
   /* Login button fix for all mobile/tablet sizes */
