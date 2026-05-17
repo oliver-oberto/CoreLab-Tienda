@@ -368,6 +368,7 @@
 
   .inner {
     gap: 0.5rem;
+    justify-content: space-between;
   }
 
   .actions {
@@ -386,11 +387,8 @@
   }
 
   .logo {
-    flex: 1;
-    min-width: 0;
-    transform: scale(0.68);
+    transform: scale(0.75);
     transform-origin: left center;
-    width: auto;
   }
 
   /* Login button fix for all mobile/tablet sizes */
