@@ -103,7 +103,7 @@ export default function CartPage() {
               </div>
               {shipping > 0 && (
                 <p className={styles.shippingNote}>
-                  Comprá {formatPrice(FREE_SHIPPING_THRESHOLD - total)} más para envío gratis
+                  Comprá {formatPrice(FREE_SHIPPING_THRESHOLD - total)} más para envío gratis en Córdoba
                 </p>
               )}
             </div>
@@ -121,8 +121,8 @@ export default function CartPage() {
                 <div style={{ margin: '16px 0' }}>
                   <p style={{ fontSize: 13, color: '#1B2A4A', marginBottom: 8 }}>
                     {remaining > 0
-                      ? <>🚚 Te faltan <strong>{formatPesos(remaining)}</strong> para envío gratis</>
-                      : <span style={{ color: '#1D9E75' }}>🎉 ¡Envío gratis desbloqueado!</span>
+                      ? <>🚚 Te faltan <strong>{formatPesos(remaining)}</strong> para envío gratis en Córdoba</>
+                      : <span style={{ color: '#1D9E75' }}>🎉 ¡Envío gratis en Córdoba desbloqueado!</span>
                     }
                   </p>
                   <div style={{ background: '#E8ECF2', borderRadius: 4, height: 6 }}>

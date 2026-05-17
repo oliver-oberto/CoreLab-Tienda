@@ -76,7 +76,7 @@ export default function HomePage() {
         <div className="container">
           <div className={styles.trustItems}>
             {[
-              { icon: "🚚", text: "Envío rápido a todo el país" },
+              { icon: "🚚", text: "Envío rápido en Córdoba" },
               { icon: "✅", text: "Productos 100% originales" },
               { icon: "🔒", text: "Pago seguro" },
               { icon: "📱", text: "Atención por WhatsApp" },

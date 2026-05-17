@@ -250,7 +250,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <div className={styles.trust}>
               {[
                 { icon: "✅", text: "Producto 100% original" },
-                { icon: "🚚", text: "Envío rápido a todo el país" },
+                { icon: "🚚", text: "Envío rápido en Córdoba" },
                 { icon: "🔒", text: "Compra 100% segura" },
               ].map((item) => (
                 <div key={item.text} className={styles.trustItem}>
