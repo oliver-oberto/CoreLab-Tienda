@@ -199,7 +199,7 @@
   font-family: var(--font-primary);
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--gray);
+  color: var(--dark-blue, #1A2E4C);
   background: var(--bg-card);
   border: 1px solid var(--border);
   cursor: pointer;
@@ -213,9 +213,9 @@
 }
 
 .pageActive {
-  background: var(--silver);
-  color: var(--navy-dark) !important;
-  border-color: var(--silver) !important;
+  background: var(--dark-blue, #1A2E4C);
+  color: #ffffff !important;
+  border-color: var(--dark-blue, #1A2E4C) !important;
 }
 
 .mobileCategories {
