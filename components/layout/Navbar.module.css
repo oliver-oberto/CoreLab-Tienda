@@ -387,8 +387,9 @@
   }
 
   .logo {
-    transform: scale(0.75);
+    transform: scale(0.82);
     transform-origin: left center;
+    margin-left: 4px;
   }
 
   /* Login button fix for all mobile/tablet sizes */
