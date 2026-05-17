@@ -360,6 +360,14 @@
     transform-origin: left center;
     width: 140px;
   }
+
+  /* Login button fix for all mobile/tablet sizes */
+  .actions a.btn {
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 6px 10px;
+    letter-spacing: 0.04em;
+  }
 }
 
 @media (max-width: 480px) {
@@ -368,11 +376,5 @@
   }
   .userBtn {
     padding: 0.4rem 0.5rem;
-  }
-  /* Login button fix */
-  .actions a.btn {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.02em;
   }
 }
