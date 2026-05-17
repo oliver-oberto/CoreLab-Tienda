@@ -8,6 +8,8 @@ function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR", { minimumFractionDigits: 0 });
 }
 
+const FREE_SHIPPING_THRESHOLD = 60000;
+
 export default function CartPage() {
   const { items, count, total, updateQuantity, removeItem } = useCart();
 
@@ -22,7 +24,7 @@ export default function CartPage() {
     );
   }
 
-  const shipping = total > 15000 ? 0 : 1500;
+  const shipping = total >= FREE_SHIPPING_THRESHOLD ? 0 : 1500;
 
   return (
     <div className={styles.page}>
@@ -101,7 +103,7 @@ export default function CartPage() {
               </div>
               {shipping > 0 && (
                 <p className={styles.shippingNote}>
-                  Comprá {formatPrice(15000 - total)} más para envío gratis
+                  Comprá {formatPrice(FREE_SHIPPING_THRESHOLD - total)} más para envío gratis
                 </p>
               )}
             </div>
@@ -109,6 +111,32 @@ export default function CartPage() {
               <span>Total</span>
               <span>{formatPrice(total + shipping)}</span>
             </div>
+            {/* Free shipping progress bar */}
+            {(() => {
+              const remaining = FREE_SHIPPING_THRESHOLD - total;
+              const progress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100);
+              const formatPesos = (n: number) =>
+                n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+              return (
+                <div style={{ margin: '16px 0' }}>
+                  <p style={{ fontSize: 13, color: '#1B2A4A', marginBottom: 8 }}>
+                    {remaining > 0
+                      ? <>🚚 Te faltan <strong>{formatPesos(remaining)}</strong> para envío gratis</>
+                      : <span style={{ color: '#1D9E75' }}>🎉 ¡Envío gratis desbloqueado!</span>
+                    }
+                  </p>
+                  <div style={{ background: '#E8ECF2', borderRadius: 4, height: 6 }}>
+                    <div style={{
+                      background: progress >= 100 ? '#1D9E75' : '#1B2A4A',
+                      width: progress + '%',
+                      height: '100%',
+                      borderRadius: 4,
+                      transition: 'width 0.4s ease'
+                    }} />
+                  </div>
+                </div>
+              );
+            })()}
             <Link href="/checkout" className="btn btn-primary btn-lg btn-full" id="go-checkout-btn">
               Proceder al pago →
             </Link>
