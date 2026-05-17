@@ -359,16 +359,15 @@
   }
   
   .navbar {
-    padding: 0 16px;
-  }
-
-  .inner {
-    gap: 0.5rem;
-    justify-content: space-between;
+    padding: 0 12px;
   }
 
   .navLinks {
     display: none;
+  }
+
+  .inner {
+    gap: 0.5rem;
   }
 
   .actions {
@@ -387,11 +386,11 @@
   }
 
   .logo {
-    transform: scale(0.72);
-    transform-origin: left center;
-    margin-right: auto;
-    margin-left: 4px;
+    flex: 1;
     min-width: 0;
+    transform: scale(0.68);
+    transform-origin: left center;
+    width: auto;
   }
 
   /* Login button fix for all mobile/tablet sizes */
