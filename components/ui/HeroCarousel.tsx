@@ -7,21 +7,15 @@ import styles from "./HeroCarousel.module.css";
 const IMAGES = [
   {
     src: "/assets/subidas/FotoPrincipal.png",
-    alt: "Suplementos Premium CoreLab",
-    badgeLabel: "PRODUCTOS DESTACADOS",
-    badgeBrand: "de Cellpure"
+    alt: "Suplementos Premium CoreLab"
   },
   {
     src: "/assets/subidas/slide2.png",
-    alt: "Proteínas de alta calidad",
-    badgeLabel: "MÁXIMA RECUPERACIÓN",
-    badgeBrand: "Proteínas Isoladas"
+    alt: "Proteínas de alta calidad"
   },
   {
     src: "/assets/subidas/slide3.png",
-    alt: "Pre-entrenos energéticos",
-    badgeLabel: "ENERGÍA EXTREMA",
-    badgeBrand: "Fórmulas Pre-Workout"
+    alt: "Pre-entrenos energéticos"
   }
 ];
 
@@ -66,11 +60,6 @@ export default function HeroCarousel() {
             />
           ))}
         </div>
-      </div>
-      
-      <div className={styles.heroBadge}>
-        <span className={styles.heroBadgeLabel}>{IMAGES[activeIndex].badgeLabel}</span>
-        <span className={styles.heroBadgeBrand}>{IMAGES[activeIndex].badgeBrand}</span>
       </div>
     </div>
   );
