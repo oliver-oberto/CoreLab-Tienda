@@ -357,12 +357,28 @@
   .visibleMobile {
     display: inline;
   }
+  
+  .navbar {
+    padding: 0 12px;
+  }
+
   .navLinks {
     display: none;
   }
 
+  .inner {
+    gap: 0.5rem;
+  }
+
+  .actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
   .hamburger {
     display: flex;
+    flex-shrink: 0;
+    min-width: 32px;
   }
 
   .userName {
@@ -370,17 +386,19 @@
   }
 
   .logo {
-    transform: scale(0.75);
+    flex: 1;
+    min-width: 0;
+    transform: scale(0.68);
     transform-origin: left center;
-    width: 140px;
+    width: auto;
   }
 
   /* Login button fix for all mobile/tablet sizes */
   .actions a.btn {
     white-space: nowrap;
-    font-size: 11px;
-    padding: 6px 10px;
-    letter-spacing: 0.04em;
+    font-size: 10px;
+    padding: 6px 8px;
+    letter-spacing: 0.03em;
   }
 }
 
