@@ -6,16 +6,16 @@ import styles from "./HeroCarousel.module.css";
 
 const IMAGES = [
   {
-    src: "/assets/subidas/FotoPrincipal.png",
-    alt: "Suplementos Premium CoreLab"
+    src: "/assets/subidas/slide_nad.png",
+    alt: "Suplemento Cellpure NAD+ con Resveratrol"
   },
   {
-    src: "/assets/subidas/slide2.png",
-    alt: "Proteínas de alta calidad"
+    src: "/assets/subidas/slide_creatine.png",
+    alt: "Suplemento Cellpure Creatine Monohidrato"
   },
   {
-    src: "/assets/subidas/slide3.png",
-    alt: "Pre-entrenos energéticos"
+    src: "/assets/subidas/slide_she.png",
+    alt: "Suplemento Cellpure SHE Colágeno Hidrolizado"
   }
 ];
 
