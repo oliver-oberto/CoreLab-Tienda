@@ -70,8 +70,8 @@ export default function ChatWidget() {
     return () => window.removeEventListener("openCoreLabChat", handler);
   }, []);
 
-  // Hide on checkout
-  if (pathname?.startsWith("/checkout")) {
+  // Hide on checkout and admin pages
+  if (pathname?.startsWith("/checkout") || pathname?.startsWith("/admin")) {
     return null;
   }
 
