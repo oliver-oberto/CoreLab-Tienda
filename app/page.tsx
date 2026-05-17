@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
+import HeroCarousel from "@/components/ui/HeroCarousel";
 import styles from "./page.module.css";
 
 export default function HomePage() {
@@ -65,22 +66,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className={styles.heroImage}>
-              <div className={styles.heroImageWrap}>
-                <Image
-                  src="/assets/subidas/FotoPrincipal.png"
-                  alt="Suplementos CoreLab"
-                  fill
-                  style={{ objectFit: "contain" }}
-                  priority
-                />
-                <div className={styles.heroImageOverlay} />
-              </div>
-              <div className={styles.heroBadge}>
-                <span className={styles.heroBadgeLabel}>PRODUCTOS DESTACADOS</span>
-                <span className={styles.heroBadgeBrand}>de Cellpure</span>
-              </div>
-            </div>
+            <HeroCarousel />
           </div>
         </div>
       </section>

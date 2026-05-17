@@ -97,55 +97,7 @@
   background: var(--border);
 }
 
-.heroImage {
-  position: relative;
-}
 
-.heroImageWrap {
-  position: relative;
-  aspect-ratio: 4/4;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid rgba(192, 192, 192, 0.15);
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.heroImageOverlay {
-  display: none;
-}
-
-.heroBadge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: var(--primary-blue);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(192, 192, 192, 0.2);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  box-shadow: var(--shadow-lg);
-}
-
-.heroBadgeLabel {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  color: white;
-  text-transform: uppercase;
-}
-
-.heroBadgeBrand {
-  font-family: var(--font-primary);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: white;
-  letter-spacing: 0.1em;
-}
-
-/* ── Trust bar ── */
 .trustBar {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border);
@@ -359,6 +311,7 @@
   .heroContent {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 2rem;
   }
 
   .heroText {
@@ -384,10 +337,6 @@
   .heroStats {
     justify-content: center;
     margin-top: 2rem;
-  }
-
-  .heroImage {
-    display: none;
   }
 
   .bannerInner {
