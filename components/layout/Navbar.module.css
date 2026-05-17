@@ -354,12 +354,15 @@
   .userName {
     display: none;
   }
+
+  .logo {
+    transform: scale(0.75);
+    transform-origin: left center;
+    width: 140px;
+  }
 }
 
 @media (max-width: 480px) {
-  .logoText {
-    display: none;
-  }
   .actions {
     gap: 0.35rem;
   }
