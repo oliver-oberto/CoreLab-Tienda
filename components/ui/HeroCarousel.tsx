@@ -16,6 +16,10 @@ const IMAGES = [
   {
     src: "/assets/subidas/corelabimg3.jpeg",
     alt: "Suplemento Cellpure SHE Colágeno Hidrolizado"
+  },
+  {
+    src: "/assets/subidas/corelabimg4.jpeg",
+    alt: "Suplemento Cellpure Citrato de Magnesio"
   }
 ];
 
