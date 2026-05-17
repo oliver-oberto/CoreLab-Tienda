@@ -79,7 +79,16 @@ export async function POST(req: NextRequest) {
       weight, flavor, flavors, servings 
     } = body;
 
-    const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const baseSlug = name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")   // strip accents
+      .replace(/[^a-z0-9\s-]/g, "")      // remove special chars
+      .trim()
+      .replace(/\s+/g, "-")              // spaces → dashes
+      .replace(/-+/g, "-");              // collapse multiple dashes
+    const uniqueSuffix = Date.now().toString(36).slice(-4); // e.g. "k3f2"
+    const slug = `${baseSlug}-${uniqueSuffix}`;
     
     // Inserción transacción (o secuencial simple)
     const result = await db.execute({
