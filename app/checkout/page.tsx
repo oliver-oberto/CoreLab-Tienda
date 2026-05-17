@@ -11,7 +11,7 @@ function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR", { minimumFractionDigits: 0 });
 }
 
-const FREE_SHIPPING_THRESHOLD = 60000;
+const FREE_SHIPPING_THRESHOLD = 50000;
 
 const PAYMENT_METHODS = [
   {
