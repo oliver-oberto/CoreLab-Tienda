@@ -51,7 +51,7 @@ export default function HomePage() {
               </div>
               <div className={styles.heroStats}>
                 <div className={styles.stat}>
-                  <span className={styles.statNum}>12+</span>
+                  <span className={styles.statNum}>15+</span>
                   <span className={styles.statLabel}>Productos</span>
                 </div>
                 <div className={styles.statDivider} />
