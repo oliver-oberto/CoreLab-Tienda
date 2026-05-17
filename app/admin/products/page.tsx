@@ -23,6 +23,35 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState<any>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterActive, setFilterActive] = useState("all"); // "all" | "active" | "inactive"
+  const [filterStock, setFilterStock] = useState("all");   // "all" | "instock" | "nostock"
+  const [filterFeatured, setFilterFeatured] = useState("all"); // "all" | "yes" | "no"
+
+  const filteredProducts = products.filter((p) => {
+    if (filterCategory && !String(p.category_ids || "").split(",").includes(String(filterCategory))) return false;
+    if (filterActive === "active" && p.active !== 1) return false;
+    if (filterActive === "inactive" && p.active === 1) return false;
+    if (filterStock === "instock" && p.stock <= 0) return false;
+    if (filterStock === "nostock" && p.stock > 0) return false;
+    if (filterFeatured === "yes" && p.featured !== 1) return false;
+    if (filterFeatured === "no" && p.featured === 1) return false;
+    return true;
+  });
+
+  const activeFiltersCount = [
+    filterCategory !== "",
+    filterActive !== "all",
+    filterStock !== "all",
+    filterFeatured !== "all",
+  ].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setFilterCategory("");
+    setFilterActive("all");
+    setFilterStock("all");
+    setFilterFeatured("all");
+  };
 
   const [showCatModal, setShowCatModal] = useState(false);
   const [catForm, setCatForm] = useState({ name: "", icon: "📦" });
@@ -154,6 +183,73 @@ export default function AdminProductsPage() {
             id="admin-products-search"
           />
           <button className="btn btn-primary" onClick={openNew} id="admin-new-product-btn">+ Nuevo producto</button>
+        </div>
+      </div>
+
+      {/* ── Filter Bar ── */}
+      <div className={styles.filterBar}>
+        <div className={styles.filterBarLeft}>
+          <span className={styles.filterLabel}>Filtrar:</span>
+
+          {/* Category */}
+          <select
+            className={styles.filterSelect}
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            id="admin-filter-category"
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map((c: any) => (
+              <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+            ))}
+          </select>
+
+          {/* Active */}
+          <select
+            className={styles.filterSelect}
+            value={filterActive}
+            onChange={(e) => setFilterActive(e.target.value)}
+            id="admin-filter-active"
+          >
+            <option value="all">Activo / Inactivo</option>
+            <option value="active">✅ Solo activos</option>
+            <option value="inactive">🚫 Solo inactivos</option>
+          </select>
+
+          {/* Stock */}
+          <select
+            className={styles.filterSelect}
+            value={filterStock}
+            onChange={(e) => setFilterStock(e.target.value)}
+            id="admin-filter-stock"
+          >
+            <option value="all">Con / Sin stock</option>
+            <option value="instock">📦 Con stock</option>
+            <option value="nostock">⚠️ Sin stock</option>
+          </select>
+
+          {/* Featured */}
+          <select
+            className={styles.filterSelect}
+            value={filterFeatured}
+            onChange={(e) => setFilterFeatured(e.target.value)}
+            id="admin-filter-featured"
+          >
+            <option value="all">Destacados / No</option>
+            <option value="yes">⭐ Solo destacados</option>
+            <option value="no">— No destacados</option>
+          </select>
+        </div>
+
+        <div className={styles.filterBarRight}>
+          <span className={styles.filterCount}>
+            {filteredProducts.length} de {products.length} productos
+          </span>
+          {activeFiltersCount > 0 && (
+            <button className={styles.clearFiltersBtn} onClick={clearFilters} id="admin-clear-filters">
+              ✕ Limpiar ({activeFiltersCount})
+            </button>
+          )}
         </div>
       </div>
 
@@ -319,7 +415,14 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className={styles.emptyRow}>
+                    <span>🔍 Ningún producto coincide con los filtros activos.</span>
+                    <button className={styles.clearFiltersBtn} onClick={clearFilters}>Limpiar filtros</button>
+                  </td>
+                </tr>
+              ) : filteredProducts.map((p) => (
                 <tr key={p.id} id={`admin-row-${p.id}`}>
                   <td>
                     <div className={styles.productCell}>

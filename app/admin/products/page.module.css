@@ -22,6 +22,97 @@
   gap: 0.75rem;
 }
 
+/* ── Filter Bar ── */
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.filterBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.filterBarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.filterLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-dark);
+  white-space: nowrap;
+}
+
+.filterSelect {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.82rem;
+  font-family: inherit;
+  color: var(--dark-blue);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.filterSelect:focus,
+.filterSelect:hover {
+  border-color: var(--dark-blue);
+}
+
+.filterCount {
+  font-size: 0.78rem;
+  color: var(--gray-dark);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.clearFiltersBtn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.clearFiltersBtn:hover {
+  background: rgba(192, 57, 43, 0.18);
+  border-color: rgba(192, 57, 43, 0.6);
+}
+
+.emptyRow {
+  text-align: center;
+  padding: 2.5rem 1rem !important;
+  color: var(--gray-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 /* Table shared styles */
 .tableWrap {
   overflow-x: auto;
