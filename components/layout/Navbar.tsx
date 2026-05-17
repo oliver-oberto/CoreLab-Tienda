@@ -103,7 +103,8 @@ export default function Navbar() {
             </div>
           ) : (
             <Link href="/auth/login" className="btn btn-outline btn-sm" id="navbar-login-btn">
-              Iniciar sesión
+              <span className={styles.hiddenMobile}>Iniciar sesión</span>
+              <span className={styles.visibleMobile}>Ingresar</span>
             </Link>
           )}
 

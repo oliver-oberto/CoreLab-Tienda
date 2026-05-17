@@ -341,8 +341,22 @@
   padding: 0.9rem 0;
   width: 100%;
 }
+.hiddenMobile {
+  display: inline;
+}
+
+.visibleMobile {
+  display: none;
+}
 
 @media (max-width: 768px) {
+  .hiddenMobile {
+    display: none;
+  }
+
+  .visibleMobile {
+    display: inline;
+  }
   .navLinks {
     display: none;
   }
