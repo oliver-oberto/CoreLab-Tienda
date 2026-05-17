@@ -7,15 +7,15 @@ import styles from "./HeroCarousel.module.css";
 const IMAGES = [
   {
     src: "/assets/subidas/corelabimg1.jpeg",
-    alt: "Suplemento Cellpure Creatine Monohidrato"
+    alt: "Suplemento Cellpure SHE Colágeno Hidrolizado"
   },
   {
     src: "/assets/subidas/corelabimg2.jpeg",
-    alt: "Suplemento Cellpure NAD+ con Resveratrol"
+    alt: "Suplemento Cellpure Creatine Monohidrato"
   },
   {
     src: "/assets/subidas/corelabimg3.jpeg",
-    alt: "Suplemento Cellpure SHE Colágeno Hidrolizado"
+    alt: "Suplemento Cellpure NAD+ con Resveratrol"
   },
   {
     src: "/assets/subidas/celpureimg4.png",
