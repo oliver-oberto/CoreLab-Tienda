@@ -1,29 +1,30 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useBanner } from "@/context/BannerContext";
 import styles from "./WelcomeModal.module.css";
 
-const POPUP_STORAGE_KEY = "corelab_popup_shown";
 const DELAY_MS = 9000;
 
 export default function WelcomeModal() {
+  const { couponUsed, couponLoading } = useBanner();
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const alreadyShown = localStorage.getItem(POPUP_STORAGE_KEY);
-    if (alreadyShown) return;
+    // Esperar a que se resuelva el estado del cupón
+    if (couponLoading) return;
 
-    const timer = setTimeout(() => {
-      setVisible(true);
-      localStorage.setItem(POPUP_STORAGE_KEY, "true");
-    }, DELAY_MS);
+    // Si ya usó el cupón → nunca mostrar
+    if (couponUsed) return;
 
+    // No logueado o logueado sin usar → mostrar cada visita
+    const timer = setTimeout(() => setVisible(true), DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [couponUsed, couponLoading]);
 
-  const close = useCallback(() => setVisible(false), []);
+  const close = () => setVisible(false);
 
   const handleUsarAhora = () => {
     close();
@@ -68,13 +69,32 @@ export default function WelcomeModal() {
             src="/assets/subidas/logo-oficial-transparent.png"
             alt="CoreLab Logo"
             className={styles.logoImg}
-            style={{ filter: "brightness(0) saturate(100%) invert(14%) sepia(35%) saturate(800%) hue-rotate(190deg) brightness(90%) contrast(95%)" }}
+            style={{
+              filter:
+                "brightness(0) saturate(100%) invert(14%) sepia(35%) saturate(800%) hue-rotate(190deg) brightness(90%) contrast(95%)",
+            }}
           />
           <div style={{ textAlign: "left", lineHeight: 1 }}>
-            <div style={{ fontFamily: "var(--font-primary)", fontSize: "1rem", fontWeight: 700, letterSpacing: "0.15em", color: "#1B2A4A" }}>
+            <div
+              style={{
+                fontFamily: "var(--font-primary)",
+                fontSize: "1rem",
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                color: "#1B2A4A",
+              }}
+            >
               CORELAB
             </div>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.45rem", letterSpacing: "0.2em", color: "#5C6F8A", textTransform: "uppercase" }}>
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.45rem",
+                letterSpacing: "0.2em",
+                color: "#5C6F8A",
+                textTransform: "uppercase",
+              }}
+            >
               SUPLEMENTOS
             </div>
           </div>
@@ -107,7 +127,7 @@ export default function WelcomeModal() {
           </span>
         </button>
 
-        {/* Terms — una línea con separadores */}
+        {/* Terms */}
         <ul className={styles.terms}>
           <li>✓ Hasta $45.000</li>
           <li>✓ Un uso por cuenta</li>

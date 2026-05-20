@@ -1,53 +1,37 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
 import { useBanner } from "@/context/BannerContext";
 import styles from "./PromoBanner.module.css";
 
 export default function PromoBanner() {
-  const { user, loading } = useAuth();
-  const { bannerVisible, hideBanner } = useBanner();
-  const [shouldRender, setShouldRender] = useState(false);
+  const { bannerVisible, hideBanner, couponUsed, couponLoading } = useBanner();
+  // Pequeño estado local para la animación de entrada
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Si ya fue cerrado en esta sesión, no renderizar y ocultar del contexto
+    // Comprobar si fue cerrado manualmente en esta sesión
     const dismissed = sessionStorage.getItem("corelab_banner_dismissed");
     if (dismissed) {
       hideBanner();
       return;
     }
-
-    const checkCouponStatus = async () => {
-      if (!user) {
-        setShouldRender(true);
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/coupons/status?code=BIENVENIDO");
-        const data = await res.json();
-        if (!data.used) {
-          setShouldRender(true);
-        } else {
-          hideBanner();
-        }
-      } catch {
-        setShouldRender(true);
-      }
-    };
-
-    if (!loading) {
-      checkCouponStatus();
-    }
+    setMounted(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, loading]);
+  }, []);
+
+  // No renderizar mientras carga el estado del cupón
+  if (couponLoading) return null;
+  // Si ya usó el cupón → nunca mostrar banner
+  if (couponUsed) return null;
+  // Si fue cerrado (context) → no mostrar
+  if (!bannerVisible) return null;
+  // Si fue cerrado en sesión antes de que montara
+  if (!mounted) return null;
 
   const handleDismiss = () => {
     sessionStorage.setItem("corelab_banner_dismissed", "true");
     hideBanner();
   };
-
-  if (!bannerVisible || !shouldRender) return null;
 
   return (
     <div className={styles.banner} role="banner" aria-label="Promoción de bienvenida">
