@@ -12,7 +12,6 @@ export default function WelcomeModal() {
   const router = useRouter();
 
   useEffect(() => {
-    // Solo mostrar si nunca se mostró antes
     const alreadyShown = localStorage.getItem(POPUP_STORAGE_KEY);
     if (alreadyShown) return;
 
@@ -37,7 +36,7 @@ export default function WelcomeModal() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback silencioso
+      // fallback silencioso
     }
   };
 
@@ -53,7 +52,7 @@ export default function WelcomeModal() {
       id="welcome-modal"
     >
       <div className={styles.modal}>
-        {/* Close button */}
+        {/* X button */}
         <button
           className={styles.closeBtn}
           onClick={close}
@@ -63,59 +62,75 @@ export default function WelcomeModal() {
           ✕
         </button>
 
-        {/* Header decorative */}
-        <div className={styles.header}>
-          <div className={styles.giftIcon}>🎁</div>
-          <div className={styles.shine} aria-hidden="true" />
-        </div>
-
-        {/* Content */}
-        <div className={styles.body}>
-          <p className={styles.subtitle}>¡Bienvenido a CoreLab!</p>
-          <h2 className={styles.title} id="welcome-modal-title">
-            Tu primera compra tiene
-          </h2>
-          <div className={styles.discount}>10% OFF</div>
-
-          {/* Coupon code */}
-          <button
-            className={styles.couponCode}
-            onClick={handleCopyCode}
-            title="Clic para copiar"
-            id="welcome-modal-copy-code"
-            aria-label="Copiar código BIENVENIDO"
-          >
-            <span className={styles.couponLabel}>
-              {copied ? "¡Copiado! ✓" : "BIENVENIDO"}
-            </span>
-            <span className={styles.copyHint}>{copied ? "" : "clic para copiar"}</span>
-          </button>
-
-          {/* Terms */}
-          <ul className={styles.terms}>
-            <li>✓ Válido en productos hasta $45.000</li>
-            <li>✓ Solo para usuarios registrados</li>
-            <li>✓ Un uso por cuenta</li>
-          </ul>
-
-          {/* Actions */}
-          <div className={styles.actions}>
-            <button
-              className={styles.btnPrimary}
-              onClick={handleUsarAhora}
-              id="welcome-modal-use-btn"
-            >
-              Ir a la tienda →
-            </button>
-            <button
-              className={styles.btnGhost}
-              onClick={close}
-              id="welcome-modal-close-btn"
-            >
-              Cerrar
-            </button>
+        {/* Logo CoreLab */}
+        <div className={styles.logo}>
+          <img
+            src="/assets/subidas/logo-oficial-transparent.png"
+            alt="CoreLab Logo"
+            className={styles.logoImg}
+            style={{ filter: "brightness(0) saturate(100%) invert(14%) sepia(35%) saturate(800%) hue-rotate(190deg) brightness(90%) contrast(95%)" }}
+          />
+          <div style={{ textAlign: "left", lineHeight: 1 }}>
+            <div style={{ fontFamily: "var(--font-primary)", fontSize: "1rem", fontWeight: 700, letterSpacing: "0.15em", color: "#1B2A4A" }}>
+              CORELAB
+            </div>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.45rem", letterSpacing: "0.2em", color: "#5C6F8A", textTransform: "uppercase" }}>
+              SUPLEMENTOS
+            </div>
           </div>
         </div>
+
+        {/* Decorative line */}
+        <div className={styles.divLine} />
+
+        {/* Subtitle */}
+        <p className={styles.subtitle} id="welcome-modal-title">
+          Tu primera compra en CoreLab tiene
+        </p>
+
+        {/* 10% OFF */}
+        <div className={styles.discount}>10% OFF</div>
+
+        {/* Copyable coupon code */}
+        <button
+          className={styles.couponCode}
+          onClick={handleCopyCode}
+          title="Clic para copiar"
+          id="welcome-modal-copy-code"
+          aria-label="Copiar código BIENVENIDO"
+        >
+          <span className={styles.couponLabel}>
+            {copied ? "✓ COPIADO" : "BIENVENIDO"}
+          </span>
+          <span className={styles.copyHint}>
+            {copied ? "" : "CLIC PARA COPIAR"}
+          </span>
+        </button>
+
+        {/* Terms — una línea con separadores */}
+        <ul className={styles.terms}>
+          <li>✓ Hasta $45.000</li>
+          <li>✓ Un uso por cuenta</li>
+          <li>✓ Solo usuarios registrados</li>
+        </ul>
+
+        {/* CTA */}
+        <button
+          className={styles.btnPrimary}
+          onClick={handleUsarAhora}
+          id="welcome-modal-use-btn"
+        >
+          IR A LA TIENDA →
+        </button>
+
+        {/* Ghost close */}
+        <button
+          className={styles.btnGhost}
+          onClick={close}
+          id="welcome-modal-close-btn"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   );

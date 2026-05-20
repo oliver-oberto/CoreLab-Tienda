@@ -301,18 +301,20 @@
 
 .tooltip {
   position: fixed;
-  bottom: 90px;
+  bottom: 100px;
   right: 20px;
   background: #1B2A4A;
   color: white;
   padding: 10px 14px;
   border-radius: 8px 8px 2px 8px;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.4;
-  max-width: 210px;
+  max-width: 200px;
   box-shadow: 0 4px 16px rgba(27, 42, 74, 0.25);
-  animation: fadeSlideUp 0.3s ease;
   z-index: 999;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeSlideUp 0.4s ease 0.1s forwards;
 }
 
 .tooltip::after {
@@ -343,15 +345,15 @@
 }
 
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
   .tooltip {
-    bottom: 82px;
-    right: 16px;
-    max-width: 190px;
+    bottom: 90px;
+    right: 14px;
+    max-width: 180px;
     font-size: 12px;
   }
 }

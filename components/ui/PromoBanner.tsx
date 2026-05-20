@@ -9,14 +9,11 @@ export default function PromoBanner() {
   const [couponUsed, setCouponUsed] = useState(false);
 
   useEffect(() => {
-    // No mostrar si el usuario cerró el banner en esta sesión
     const dismissed = sessionStorage.getItem("corelab_banner_dismissed");
     if (dismissed) return;
 
-    // Si el usuario está logueado, verificar si ya usó el cupón
     const checkCouponStatus = async () => {
       if (!user) {
-        // Sin login: mostrar el banner igualmente (para incentivar registro)
         setVisible(true);
         return;
       }
@@ -30,7 +27,7 @@ export default function PromoBanner() {
           setCouponUsed(true);
         }
       } catch {
-        setVisible(true); // En caso de error, mostrar igual
+        setVisible(true);
       }
     };
 
@@ -51,11 +48,10 @@ export default function PromoBanner() {
       <div className={styles.inner}>
         <span className={styles.icon}>🎁</span>
         <p className={styles.text}>
-          Primera compra:{" "}
-          <span className={styles.highlight}>
-            usá el código <strong>BIENVENIDO</strong> y llevate 10% OFF
-          </span>
-          <span className={styles.condition}> · Válido en productos hasta $45.000</span>
+          Primera compra: código{" "}
+          <strong className={styles.code}>BIENVENIDO</strong>
+          {" "}→ 10% OFF{" "}
+          <span className={styles.condition}>· Válido en productos hasta $45.000</span>
         </p>
         <button
           className={styles.closeBtn}
