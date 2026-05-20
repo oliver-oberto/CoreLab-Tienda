@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { useBanner } from "@/context/BannerContext";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { count } = useCart();
+  const { bannerVisible } = useBanner();
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,7 +29,14 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`} id="main-navbar">
+    <nav
+      className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}
+      id="main-navbar"
+      style={{
+        top: bannerVisible ? "var(--banner-height)" : "0",
+        transition: "top 0.25s ease",
+      }}
+    >
       <div className={`container ${styles.inner}`}>
         {/* Logo */}
         <Link href="/" className={styles.logo} id="navbar-logo">
