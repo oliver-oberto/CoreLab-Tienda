@@ -101,6 +101,15 @@ async function initializeSchema(client: Client) {
       UNIQUE(user_id, product_id, selected_flavor)
     );
 
+    CREATE TABLE IF NOT EXISTS coupon_redemptions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      coupon_code TEXT NOT NULL,
+      used_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      order_id INTEGER REFERENCES orders(id),
+      UNIQUE(user_id, coupon_code)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
     CREATE INDEX IF NOT EXISTS idx_product_categories_p ON product_categories(product_id);
     CREATE INDEX IF NOT EXISTS idx_product_categories_c ON product_categories(category_id);
@@ -108,6 +117,7 @@ async function initializeSchema(client: Client) {
     CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
     CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
     CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
+    CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_user ON coupon_redemptions(user_id, coupon_code);
   `);
 
   await seedData(client);

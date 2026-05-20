@@ -1,0 +1,84 @@
+.banner {
+  width: 100%;
+  background: linear-gradient(90deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+  color: var(--pure-white);
+  position: sticky;
+  top: 0;
+  z-index: 101;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.6rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  text-align: center;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.highlight strong {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.18);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.condition {
+  opacity: 0.75;
+  font-size: 0.78rem;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.3rem;
+  border-radius: 4px;
+  transition: color var(--transition), background var(--transition);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.closeBtn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 600px) {
+  .condition {
+    display: none;
+  }
+
+  .text {
+    font-size: 0.8rem;
+  }
+}

@@ -49,6 +49,19 @@ export default function CheckoutPage() {
   const { showToast } = useToast();
   const router = useRouter();
 
+  // Leer cupón guardado desde el carrito
+  const savedCoupon = (() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem("corelab_coupon");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const couponCode: string | null = savedCoupon?.code || null;
+  const discountAmount: number = savedCoupon?.discountAmount || 0;
+
   const [form, setForm] = useState({
     customer_name: user?.name || "",
     customer_email: user?.email || "",
@@ -61,7 +74,8 @@ export default function CheckoutPage() {
   const [confirmed, setConfirmed] = useState<null | { orderId: number; total: number }>(null);
 
   const freeShipping = total >= FREE_SHIPPING_THRESHOLD;
-  const grandTotal = total; // shipping coordinated separately when not free
+  // El total descontado se muestra; el envío se coordina por separado (salvo envío gratis)
+  const grandTotal = total - discountAmount;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -77,7 +91,11 @@ export default function CheckoutPage() {
     const res = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, payment_method: paymentMethod }),
+      body: JSON.stringify({
+        ...form,
+        payment_method: paymentMethod,
+        couponCode: couponCode || undefined,
+      }),
     });
     const data = await res.json();
     setLoading(false);
@@ -85,6 +103,8 @@ export default function CheckoutPage() {
       showToast(data.error || "Error al procesar el pedido", "error");
       return;
     }
+    // Limpiar cupón de sessionStorage tras confirmar
+    sessionStorage.removeItem("corelab_coupon");
     clearLocalCart();
     setConfirmed({ orderId: data.orderId, total: data.total });
   };
@@ -224,7 +244,6 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Payment details */}
                 {paymentMethod === "transferencia" && (
                   <div className={styles.payDetail}>
                     <p className={styles.payDetailTitle}>Datos para transferencia</p>
@@ -258,6 +277,12 @@ export default function CheckoutPage() {
               </div>
               <div className={styles.divider} />
               <div className={styles.summaryRow}><span>Subtotal</span><span>{formatPrice(total)}</span></div>
+              {discountAmount > 0 && (
+                <div className={styles.summaryRow} style={{ color: "var(--success)", fontWeight: 500 }}>
+                  <span>🎁 Descuento ({couponCode})</span>
+                  <span>-{formatPrice(discountAmount)}</span>
+                </div>
+              )}
               <div className={styles.summaryRow}>
                 <span>Envío (Córdoba)</span>
                 <span>

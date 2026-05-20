@@ -6,6 +6,8 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import ChatWidget from "@/components/chat/ChatWidget";
+import PromoBanner from "@/components/ui/PromoBanner";
+import WelcomeModal from "@/components/ui/WelcomeModal";
 export const metadata: Metadata = {
   title: "CoreLab Suplementos — Distribuidor Premium Cellpure",
   description:
@@ -28,10 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
+              <PromoBanner />
               <Navbar />
               <main style={{ paddingTop: "var(--navbar-height)" }}>{children}</main>
               <Footer />
               <ChatWidget />
+              <WelcomeModal />
             </ToastProvider>
           </CartProvider>
         </AuthProvider>
