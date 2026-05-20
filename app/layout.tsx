@@ -10,6 +10,7 @@ import { BannerProvider } from "@/context/BannerContext";
 import ChatWidget from "@/components/chat/ChatWidget";
 import PromoBanner from "@/components/ui/PromoBanner";
 import WelcomeModal from "@/components/ui/WelcomeModal";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "CoreLab Suplementos — Distribuidor Premium Cellpure",
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </ToastProvider>
           </CartProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
