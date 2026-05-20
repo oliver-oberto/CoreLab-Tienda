@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import styles from "./WelcomeModal.module.css";
 
 const POPUP_STORAGE_KEY = "corelab_popup_shown";
-const DELAY_MS = 15000;
+const DELAY_MS = 9000;
 
 export default function WelcomeModal() {
   const [visible, setVisible] = useState(false);
