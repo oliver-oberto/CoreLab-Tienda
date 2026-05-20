@@ -7,7 +7,7 @@ import styles from "./WelcomeModal.module.css";
 const DELAY_MS = 9000;
 
 export default function WelcomeModal() {
-  const { couponUsed, couponLoading } = useBanner();
+  const { couponUsed, couponLoading, bannerVisible } = useBanner();
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
@@ -51,6 +51,14 @@ export default function WelcomeModal() {
       aria-modal="true"
       aria-labelledby="welcome-modal-title"
       id="welcome-modal"
+      style={{
+        top: bannerVisible
+          ? "calc(var(--banner-height) + var(--navbar-height))"
+          : "var(--navbar-height)",
+        height: bannerVisible
+          ? "calc(100vh - var(--banner-height) - var(--navbar-height))"
+          : "calc(100vh - var(--navbar-height))",
+      }}
     >
       <div className={styles.modal}>
         {/* X button */}
