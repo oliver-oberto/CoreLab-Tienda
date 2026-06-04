@@ -1,0 +1,360 @@
+.chatWrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.floatingBtn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #1B2A4A;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  z-index: 1001;
+}
+
+.floatingBtn:hover {
+  transform: scale(1.05);
+  background-color: #243660;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(27, 42, 74, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(27, 42, 74, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(27, 42, 74, 0);
+  }
+}
+
+.chatPanel {
+  position: absolute;
+  bottom: 76px;
+  right: 0;
+  width: 380px;
+  height: 500px;
+  background-color: #fff;
+  border: 1px solid #D0D8E8;
+  border-radius: 6px;
+  box-shadow: 0 8px 32px rgba(27, 42, 74, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  background-color: #1B2A4A;
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.closeBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.messagesArea {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #fafafa;
+}
+
+.messageRow {
+  display: flex;
+  width: 100%;
+}
+
+.messageRow.user {
+  justify-content: flex-end;
+}
+
+.messageRow.bot {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease-out;
+  word-break: break-word;
+}
+
+.messageBubble a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.user .messageBubble {
+  background-color: #1B2A4A;
+  color: #FFFFFF;
+  border-radius: 12px 4px 4px 12px;
+}
+
+.bot .messageBubble {
+  background-color: #F0F3F8;
+  color: #1B2A4A;
+  border-radius: 4px 12px 12px 4px;
+}
+
+.errorBubble {
+  background-color: #FFF8E7 !important;
+  color: #7A5C00 !important;
+  border: none !important;
+  border-left: 3px solid #D4A017 !important;
+  border-radius: 4px !important;
+}
+
+.errorBubble a {
+  color: #1B2A4A !important;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quickReplies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.quickReplyBtn {
+  background-color: transparent;
+  border: 1.5px solid #1B2A4A;
+  color: #1B2A4A;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quickReplyBtn:hover {
+  background-color: #1B2A4A;
+  color: #fff;
+}
+
+.typingIndicator {
+  display: flex;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+.typingDot {
+  width: 6px;
+  height: 6px;
+  background-color: #1B2A4A;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typingDot:nth-child(1) { animation-delay: -0.32s; }
+.typingDot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.inputArea {
+  display: flex;
+  padding: 12px;
+  background-color: #fff;
+  border-top: 1px solid #eaeaea;
+  gap: 8px;
+}
+
+.inputField {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid #1B2A4A;
+  border-radius: 3px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.inputField::placeholder {
+  color: #a0aabf;
+}
+
+.inputField:focus {
+  border-color: #1B2A4A;
+}
+
+.sendBtn {
+  background-color: #1B2A4A;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sendBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background-color: #243660;
+}
+
+/* Mobile Full Screen */
+@media (max-width: 768px) {
+  .chatPanel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    z-index: 1002;
+  }
+
+  .chatWrapper {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+
+.tooltip {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  background: #1B2A4A;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px 8px 2px 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 200px;
+  box-shadow: 0 4px 16px rgba(27, 42, 74, 0.25);
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeSlideUp 0.4s ease 0.1s forwards;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: 18px;
+  width: 12px;
+  height: 6px;
+  background: #1B2A4A;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.tooltipClose {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+.tooltipClose:hover {
+  color: white;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .tooltip {
+    bottom: 90px;
+    right: 14px;
+    max-width: 180px;
+    font-size: 12px;
+  }
+}
+

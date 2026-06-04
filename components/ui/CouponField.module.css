@@ -1,0 +1,171 @@
+.wrapper {
+  margin: 1rem 0;
+}
+
+.field {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--dark-gray);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  transition: border-color var(--transition);
+  outline: none;
+}
+
+.input::placeholder {
+  font-family: var(--font-body);
+  letter-spacing: 0;
+  color: var(--mid-gray);
+}
+
+.input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(46, 74, 115, 0.08);
+}
+
+.inputError {
+  border-color: var(--danger);
+}
+
+.inputError:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.08);
+}
+
+.applyBtn {
+  padding: 0.7rem 1.2rem;
+  background: var(--dark-blue);
+  color: var(--pure-white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.applyBtn:hover:not(:disabled) {
+  background: var(--primary-blue);
+  transform: translateY(-1px);
+}
+
+.applyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.message {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--success);
+  font-weight: 500;
+}
+
+.messageError {
+  color: var(--danger);
+}
+
+.loginPrompt {
+  margin-top: 0.4rem;
+}
+
+.loginLink {
+  font-size: 0.85rem;
+  color: var(--primary-blue);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.loginLink:hover {
+  color: var(--dark-blue);
+}
+
+/* Applied state */
+.appliedBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(39, 174, 96, 0.06);
+  border: 1.5px solid rgba(39, 174, 96, 0.3);
+  border-radius: var(--radius-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.appliedIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.appliedInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.appliedCode {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dark-gray);
+  letter-spacing: 0.05em;
+}
+
+.appliedMsg {
+  font-size: 0.8rem;
+  color: var(--success);
+  font-weight: 500;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: var(--mid-gray);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color var(--transition);
+  line-height: 1;
+}
+
+.removeBtn:hover {
+  color: var(--danger);
+}

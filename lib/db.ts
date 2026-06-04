@@ -1,0 +1,360 @@
+import { createClient, Client } from "@libsql/client";
+
+let db: Client | null = null;
+let initialized = false;
+
+export default function getDb(): Client {
+  if (!db) {
+    db = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
+    });
+    
+    // Solo inicializamos si estamos en un entorno donde tenga sentido
+    if (!initialized && typeof window === 'undefined') {
+      initializeSchema(db).catch(console.error);
+      initialized = true;
+    }
+  }
+  return db;
+}
+
+async function initializeSchema(client: Client) {
+  await client.executeMultiple(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      phone TEXT,
+      address TEXT,
+      role TEXT NOT NULL DEFAULT 'user',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS brands (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      description TEXT,
+      logo_url TEXT,
+      active INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      icon TEXT DEFAULT '💊'
+    );
+
+    CREATE TABLE IF NOT EXISTS products (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      description TEXT NOT NULL,
+      price REAL NOT NULL,
+      original_price REAL,
+      category_id INTEGER REFERENCES categories(id), -- Mantener por ahora por compatibilidad
+      brand TEXT NOT NULL DEFAULT 'Cellpure',
+      brand_id INTEGER REFERENCES brands(id),
+      stock INTEGER NOT NULL DEFAULT 0,
+      image_url TEXT,
+      images TEXT DEFAULT '[]',
+      featured INTEGER DEFAULT 0,
+      active INTEGER DEFAULT 1,
+      weight TEXT,
+      flavor TEXT, -- Mantener por ahora
+      flavors TEXT DEFAULT '[]', -- Nuevo campo JSON para múltiples sabores
+      servings INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS product_categories (
+      product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+      category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE,
+      PRIMARY KEY (product_id, category_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      customer_name TEXT NOT NULL,
+      customer_email TEXT NOT NULL,
+      customer_phone TEXT NOT NULL,
+      shipping_address TEXT NOT NULL,
+      payment_method TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      total REAL NOT NULL,
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS order_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
+      product_id INTEGER REFERENCES products(id),
+      product_name TEXT NOT NULL,
+      product_price REAL NOT NULL,
+      quantity INTEGER NOT NULL,
+      subtotal REAL NOT NULL,
+      selected_flavor TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS cart_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+      quantity INTEGER NOT NULL DEFAULT 1,
+      selected_flavor TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id, selected_flavor)
+    );
+
+    CREATE TABLE IF NOT EXISTS coupon_redemptions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      coupon_code TEXT NOT NULL,
+      used_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      order_id INTEGER REFERENCES orders(id),
+      UNIQUE(user_id, coupon_code)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+    CREATE INDEX IF NOT EXISTS idx_product_categories_p ON product_categories(product_id);
+    CREATE INDEX IF NOT EXISTS idx_product_categories_c ON product_categories(category_id);
+    CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand);
+    CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
+    CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+    CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
+    CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_user ON coupon_redemptions(user_id, coupon_code);
+  `);
+
+  // Migración para añadir columna brand_id a base de datos existente
+  try {
+    await client.execute("ALTER TABLE products ADD COLUMN brand_id INTEGER REFERENCES brands(id)");
+  } catch (e) {
+    // La columna ya existe o es una nueva base de datos donde CREATE TABLE ya la incluyó
+  }
+
+  await seedData(client);
+
+  // Migración para poblar marcas y actualizar relaciones
+  try {
+    const uniqueBrandsRs = await client.execute("SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != ''");
+    for (const row of uniqueBrandsRs.rows) {
+      const brandName = String(row.brand);
+      const slug = brandName.toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+
+      await client.execute({
+        sql: "INSERT OR IGNORE INTO brands (name, slug) VALUES (?, ?)",
+        args: [brandName, slug]
+      });
+
+      const brandIdRs = await client.execute({
+        sql: "SELECT id FROM brands WHERE name = ?",
+        args: [brandName]
+      });
+      const brandId = brandIdRs.rows[0]?.id;
+      if (brandId) {
+        await client.execute({
+          sql: "UPDATE products SET brand_id = ? WHERE brand = ? AND brand_id IS NULL",
+          args: [brandId, brandName]
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error al migrar las marcas de los productos:", err);
+  }
+}
+
+async function seedData(client: Client) {
+  const rs = await client.execute("SELECT COUNT(*) as c FROM categories");
+  if (rs.rows[0].c && Number(rs.rows[0].c) > 0) return;
+
+  // Categories
+  const categories = [
+    ["Proteínas", "proteinas", "🥛"],
+    ["Creatina", "creatina", "💪"],
+    ["Pre-Entreno", "pre-entreno", "⚡"],
+    ["Aminoácidos", "aminoacidos", "🧬"],
+    ["Vitaminas", "vitaminas", "🌿"],
+    ["Recuperación", "recuperacion", "🔄"],
+    ["Colágeno", "colageno", "✨"],
+    ["Minerales", "minerales", "⚗️"],
+  ];
+  
+  for (const c of categories) {
+    await client.execute({
+      sql: "INSERT OR IGNORE INTO categories (name, slug, icon) VALUES (?, ?, ?)",
+      args: c
+    });
+  }
+
+  // Admin user
+  const bcrypt = require("bcryptjs");
+  const adminHash = bcrypt.hashSync("admin123", 12);
+  await client.execute({
+    sql: "INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+    args: ["Admin CoreLab", "admin@corelab.com", adminHash, "admin"]
+  });
+
+  // Products
+  const products: any[] = [
+    [
+      "Whey Protein Concentrate 80%",
+      "whey-protein-chocolate",
+      "Proteína de suero de alta calidad con 24g de proteína por porción. Ideal para el desarrollo y recuperación muscular post-entrenamiento. Sin azúcar añadida, bajo en grasa.",
+      12500, 14900, 1, "Cellpure", 45,
+      "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600",
+        "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=600",
+      ]),
+      1, "907g", "Chocolate", 30,
+    ],
+    [
+      "Whey Protein Vainilla",
+      "whey-protein-vainilla",
+      "Proteína de suero premium sabor vainilla. 24g de proteína por porción, textura cremosa y sabor inigualable. Mezcla perfecta con agua o leche.",
+      12500, 14900, 1, "Cellpure", 38,
+      "https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600",
+        "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=600",
+      ]),
+      1, "907g", "Vainilla", 30,
+    ],
+    [
+      "Creatina Monohidratada",
+      "creatina-monohidratada",
+      "Creatina monohidratada micronizada de máxima pureza (99.9%). Aumenta la fuerza, potencia y rendimiento en entrenamientos de alta intensidad. Sin saborizantes ni aditivos.",
+      8900, 10500, 2, "Cellpure", 60,
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600",
+        "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=600",
+      ]),
+      1, "300g", "Sin sabor", 60,
+    ],
+    [
+      "Citrato de Magnesio",
+      "citrato-de-magnesio",
+      "Citrato de magnesio de máxima absorción con 2460mg por porción. Vitaminas B6 y C incluidas. Reduce el cansancio, mejora el sueño y la función muscular.",
+      7500, 9200, 8, "Cellpure", 72,
+      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600",
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600",
+      ]),
+      1, "190g", "Sin sabor", 30,
+    ],
+    [
+      "Pre-Entreno Explosive",
+      "pre-entreno-explosive",
+      "Pre-entreno de alto rendimiento con cafeína, beta-alanina, citrulina y arginina. Máxima energía, foco mental y pump muscular para entrenamientos intensos.",
+      13800, 16500, 3, "Cellpure", 28,
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600",
+        "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?w=600",
+      ]),
+      1, "300g", "Sandía", 30,
+    ],
+    [
+      "BCAA 2:1:1",
+      "bcaa-211",
+      "Aminoácidos de cadena ramificada en proporción óptima 2:1:1. Previene el catabolismo muscular, acelera la recuperación y reduce el dolor post-entrenamiento.",
+      9800, 11500, 4, "Cellpure", 42,
+      "https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600",
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600",
+      ]),
+      0, "300g", "Limón", 30,
+    ],
+    [
+      "Glutamina Pura",
+      "glutamina-pura",
+      "L-Glutamina micronizada de grado farmacéutico. Mejora la recuperación muscular, fortalece el sistema inmunitario y reduce el agotamiento post-entrenamiento.",
+      7200, 8800, 5, "Cellpure", 55,
+      "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600",
+        "https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600",
+      ]),
+      0, "300g", "Sin sabor", 60,
+    ],
+    [
+      "Vitamina C 1000mg",
+      "vitamina-c-1000",
+      "Vitamina C de alta dosis con 1000mg por cápsula. Potente antioxidante que fortalece el sistema inmune, mejora la recuperación y protege el tejido muscular.",
+      4500, 5800, 5, "Cellpure", 90,
+      "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=600",
+      ]),
+      0, "60 cápsulas", null, 60,
+    ],
+    [
+      "Colágeno Hidrolizado + C",
+      "colageno-hidrolizado",
+      "Colágeno hidrolizado tipo I y III con vitamina C. Mejora la salud articular, piel y tejidos conectivos. Ideal para deportistas que someten sus articulaciones a gran carga.",
+      9500, 11200, 7, "Cellpure", 33,
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600",
+        "https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600",
+      ]),
+      0, "300g", "Sin sabor", 30,
+    ],
+    [
+      "Omega 3 Fish Oil",
+      "omega-3-fish-oil",
+      "Aceite de pescado de alta concentración con 1000mg EPA/DHA por cápsula. Reduce la inflamación, mejora la salud cardiovascular y acelera la recuperación muscular.",
+      6800, 8200, 5, "Cellpure", 48,
+      "https://images.unsplash.com/photo-1576671081837-49000212a370?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1576671081837-49000212a370?w=600",
+      ]),
+      0, "90 cápsulas", null, 90,
+    ],
+    [
+      "Whey Protein Frutilla",
+      "whey-protein-frutilla",
+      "Proteína de suero premium con delicioso sabor a frutilla. 24g de proteína pura por porción. Baja en calorías y carbohidratos.",
+      12500, 14900, 1, "Cellpure", 25,
+      "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600",
+        "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600",
+      ]),
+      0, "907g", "Frutilla", 30,
+    ],
+    [
+      "Pre-Entreno Blue Raspberry",
+      "pre-entreno-blue-raspberry",
+      "Fórmula avanzada de pre-entreno con 200mg de cafeína, 6g de citrulina y 3.2g de beta-alanina. Sabor Blue Raspberry intenso. Máximo rendimiento garantizado.",
+      13800, null, 3, "Cellpure", 20,
+      "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600",
+      JSON.stringify([
+        "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600",
+        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600",
+      ]),
+      0, "300g", "Blue Raspberry", 30,
+    ],
+  ];
+
+  for (const p of products) {
+    await client.execute({
+      sql: `INSERT OR IGNORE INTO products 
+      (name, slug, description, price, original_price, category_id, brand, stock, image_url, images, featured, weight, flavor, servings)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: p
+    });
+  }
+}
