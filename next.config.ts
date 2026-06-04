@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "acdn-us.mitiendanube.com",
       },
+      {
+        protocol: "https",
+        hostname: "ultratechnutrition.com",
+      },
     ],
   },
   serverExternalPackages: ["better-sqlite3"],
