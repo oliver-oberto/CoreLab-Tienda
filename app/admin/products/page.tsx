@@ -64,7 +64,7 @@ export default function AdminProductsPage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const res = await fetch(`/api/products?limit=50${search ? `&search=${search}` : ""}`);
+    const res = await fetch(`/api/products?admin=true&limit=200${search ? `&search=${search}` : ""}`);
     const data = await res.json();
     setProducts(data.products || []);
     setCategories(data.categories || []);

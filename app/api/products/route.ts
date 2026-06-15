@@ -13,11 +13,21 @@ export async function GET(req: NextRequest) {
     const maxPrice = searchParams.get("maxPrice");
     const featured = searchParams.get("featured");
     const sortBy = searchParams.get("sortBy");
+    const isAdminRequest = searchParams.get("admin") === "true";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "12");
     const offset = (page - 1) * limit;
 
-    let whereClause = "WHERE p.active = 1";
+    // Si es una solicitud del panel admin, verificar sesión y mostrar todos los productos
+    let showAll = false;
+    if (isAdminRequest) {
+      const session = await getSession();
+      if (session?.role === "admin") {
+        showAll = true;
+      }
+    }
+
+    let whereClause = showAll ? "WHERE 1=1" : "WHERE p.active = 1";
     const params: (string | number)[] = [];
 
     if (category) { 

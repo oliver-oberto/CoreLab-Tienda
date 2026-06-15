@@ -6,6 +6,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params;
   try {
     const db = getDb();
+
+    // Si es una solicitud del panel admin con sesión válida, mostrar aunque esté inactivo
+    const { searchParams } = new URL(req.url);
+    const isAdminRequest = searchParams.get("admin") === "true";
+    let showInactive = false;
+    if (isAdminRequest) {
+      const session = await getSession();
+      if (session?.role === "admin") showInactive = true;
+    }
+
     const productRs = await db.execute({
       sql: `
         SELECT p.*, 
@@ -15,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         FROM products p
         LEFT JOIN product_categories pc ON p.id = pc.product_id
         LEFT JOIN categories c ON pc.category_id = c.id
-        WHERE p.id = ? AND p.active = 1
+        WHERE p.id = ?${showInactive ? "" : " AND p.active = 1"}
         GROUP BY p.id
       `,
       args: [id]
