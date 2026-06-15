@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -109,13 +108,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <div className={styles.gallery}>
             {/* ... omitiendo imagen por brevedad ... */}
             <div className={styles.mainImage}>
-              <Image
+              <img
                 src={images[activeImage] || product.image_url}
                 alt={product.name}
-                fill
-                style={{ objectFit: "contain" }}
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: "contain", position: "absolute", inset: 0, width: "100%", height: "100%" }}
                 onError={(e: any) => {
                   e.currentTarget.src = "/logo_corelab.png";
                 }}
@@ -132,7 +128,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     onClick={() => setActiveImage(i)}
                     id={`thumb-${i}`}
                   >
-                    <Image src={img} alt={`${product.name} imagen ${i + 1}`} fill style={{ objectFit: "cover" }} sizes="80px" />
+                    <img src={img} alt={`${product.name} imagen ${i + 1}`} style={{ objectFit: "cover", position: "absolute", inset: 0, width: "100%", height: "100%" }} />
                   </button>
                 ))}
               </div>

@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -49,12 +48,10 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.id}`} className={styles.card} id={`product-card-${product.id}`}>
       <div className={styles.imageWrap}>
-        <Image
+        <img
           src={(product.image_url && product.image_url.includes('http')) ? product.image_url : "/logo_corelab.png"}
           alt={product.name}
-          fill
-          style={{ objectFit: "contain" }}
-          sizes="(max-width: 768px) 50vw, 25vw"
+          style={{ objectFit: "contain", position: "absolute", inset: 0, width: "100%", height: "100%" }}
           onError={(e: any) => {
             e.currentTarget.src = "/logo_corelab.png";
           }}
