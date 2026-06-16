@@ -418,12 +418,12 @@ export default function AdminProductsPage() {
                     id="form-image-url"
                   />
                   {/* Preview en tiempo real */}
-                  {form.image_url && form.image_url.startsWith("http") && (
+                  {form.image_url && (form.image_url.startsWith("http") || form.image_url.startsWith("blob:")) && (
                     <div style={{
                       marginTop: "0.6rem",
                       borderRadius: "10px",
                       overflow: "hidden",
-                      border: imagePreviewStatus === "error" ? "2px solid #e53e3e" : imagePreviewStatus === "ok" ? "2px solid #38a169" : "2px solid var(--border)",
+                      border: (imagePreviewStatus === "error" || form.image_url.startsWith("blob:")) ? "2px solid #e53e3e" : imagePreviewStatus === "ok" ? "2px solid #38a169" : "2px solid var(--border)",
                       background: "var(--surface)",
                       display: "flex",
                       alignItems: "center",
@@ -432,35 +432,46 @@ export default function AdminProductsPage() {
                       maxHeight: "200px",
                       position: "relative",
                     }}>
-                      {imagePreviewStatus === "loading" && (
-                        <span style={{ color: "var(--gray-dark)", fontSize: "0.8rem" }}>Cargando preview...</span>
-                      )}
-                      {imagePreviewStatus === "error" && (
+                      {form.image_url.startsWith("blob:") ? (
                         <div style={{ textAlign: "center", padding: "1rem" }}>
-                          <div style={{ fontSize: "1.5rem" }}>⚠️</div>
-                          <p style={{ color: "#e53e3e", fontSize: "0.75rem", margin: "0.3rem 0 0" }}>
-                            No se puede mostrar esta imagen. Verificá que la URL sea un enlace directo a la imagen.
+                          <div style={{ fontSize: "1.5rem" }}>🚫</div>
+                          <p style={{ color: "#e53e3e", fontSize: "0.75rem", margin: "0.3rem 0 0", maxWidth: "250px" }}>
+                            Las URLs que empiezan con "blob:" son temporales y solo funcionan en tu compu. Hacé click derecho en la imagen original y elegí "Copiar dirección de la imagen".
                           </p>
                         </div>
-                      )}
-                      <img
-                        src={form.image_url}
-                        alt="preview"
-                        style={{
-                          maxHeight: "196px",
-                          maxWidth: "100%",
-                          objectFit: "contain",
-                          display: imagePreviewStatus === "ok" ? "block" : "none",
-                        }}
-                        onLoad={() => setImagePreviewStatus("ok")}
-                        onError={() => setImagePreviewStatus("error")}
-                      />
-                      {imagePreviewStatus === "ok" && (
-                        <span style={{
-                          position: "absolute", top: 6, right: 8,
-                          background: "#38a169", color: "#fff",
-                          fontSize: "0.65rem", padding: "2px 7px", borderRadius: "99px", fontWeight: 700
-                        }}>✓ OK</span>
+                      ) : (
+                        <>
+                          {imagePreviewStatus === "loading" && (
+                            <span style={{ color: "var(--gray-dark)", fontSize: "0.8rem" }}>Cargando preview...</span>
+                          )}
+                          {imagePreviewStatus === "error" && (
+                            <div style={{ textAlign: "center", padding: "1rem" }}>
+                              <div style={{ fontSize: "1.5rem" }}>⚠️</div>
+                              <p style={{ color: "#e53e3e", fontSize: "0.75rem", margin: "0.3rem 0 0", maxWidth: "250px" }}>
+                                No se puede mostrar esta imagen. Verificá que la URL sea un enlace directo a la imagen.
+                              </p>
+                            </div>
+                          )}
+                          <img
+                            src={form.image_url}
+                            alt="preview"
+                            style={{
+                              maxHeight: "196px",
+                              maxWidth: "100%",
+                              objectFit: "contain",
+                              display: imagePreviewStatus === "ok" ? "block" : "none",
+                            }}
+                            onLoad={() => setImagePreviewStatus("ok")}
+                            onError={() => setImagePreviewStatus("error")}
+                          />
+                          {imagePreviewStatus === "ok" && (
+                            <span style={{
+                              position: "absolute", top: 6, right: 8,
+                              background: "#38a169", color: "#fff",
+                              fontSize: "0.65rem", padding: "2px 7px", borderRadius: "99px", fontWeight: 700
+                            }}>✓ OK</span>
+                          )}
+                        </>
                       )}
                     </div>
                   )}
