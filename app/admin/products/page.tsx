@@ -1,7 +1,26 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/context/ToastContext";
 import styles from "./page.module.css";
+
+// Convierte URLs de páginas de hosting a la URL directa de la imagen
+function resolveImageUrl(url: string): string {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    // vvrl.cc: https://vvrl.cc/es/isw980 → https://vvrl.cc/api/image/isw980/view
+    if (u.hostname === "vvrl.cc") {
+      const parts = u.pathname.split("/").filter(Boolean);
+      // /es/isw980 → parts = ["es", "isw980"] OR /en/image/isw980 → ["en","image","isw980"]
+      const id = parts[parts.length - 1];
+      if (id && !id.startsWith("image") && !id.startsWith("api")) {
+        return `https://vvrl.cc/api/image/${id}/view`;
+      }
+    }
+    // Agregar acá otros hostings si es necesario
+  } catch { /* URL inválida, devolver tal cual */ }
+  return url;
+}
 
 function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR", { minimumFractionDigits: 0 });
@@ -25,9 +44,11 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
-  const [filterActive, setFilterActive] = useState("all"); // "all" | "active" | "inactive"
-  const [filterStock, setFilterStock] = useState("all");   // "all" | "instock" | "nostock"
-  const [filterFeatured, setFilterFeatured] = useState("all"); // "all" | "yes" | "no"
+  const [filterActive, setFilterActive] = useState("all");
+  const [filterStock, setFilterStock] = useState("all");
+  const [filterFeatured, setFilterFeatured] = useState("all");
+  // Preview de imagen principal
+  const [imagePreviewStatus, setImagePreviewStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
 
   const filteredProducts = products.filter((p) => {
     if (filterCategory && !String(p.category_ids || "").split(",").includes(String(filterCategory))) return false;
@@ -77,6 +98,7 @@ export default function AdminProductsPage() {
   const openNew = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setImagePreviewStatus("idle");
     setShowForm(true);
   };
 
@@ -100,6 +122,7 @@ export default function AdminProductsPage() {
       featured: product.featured === 1, active: product.active === 1,
       images: images.join("\n"),
     });
+    setImagePreviewStatus(product.image_url ? "loading" : "idle");
     setShowForm(true);
   };
 
@@ -378,7 +401,72 @@ export default function AdminProductsPage() {
                 </div>
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <label className="form-label">URL imagen principal</label>
-                  <input className="form-input" value={form.image_url} onChange={e => setForm((p: any) => ({ ...p, image_url: e.target.value }))} placeholder="https://..." />
+                  <input
+                    className="form-input"
+                    value={form.image_url}
+                    onChange={e => {
+                      const raw = e.target.value;
+                      const resolved = resolveImageUrl(raw.trim());
+                      // Si la URL fue resuelta (transformada) avisar y usar la resuelta
+                      if (resolved !== raw.trim() && raw.trim()) {
+                        showToast(`URL convertida automáticamente a enlace directo ✅`, "success");
+                      }
+                      setForm((p: any) => ({ ...p, image_url: resolved || raw }));
+                      setImagePreviewStatus(resolved ? "loading" : "idle");
+                    }}
+                    placeholder="https://... (pegá cualquier URL de imagen)"
+                    id="form-image-url"
+                  />
+                  {/* Preview en tiempo real */}
+                  {form.image_url && form.image_url.startsWith("http") && (
+                    <div style={{
+                      marginTop: "0.6rem",
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                      border: imagePreviewStatus === "error" ? "2px solid #e53e3e" : imagePreviewStatus === "ok" ? "2px solid #38a169" : "2px solid var(--border)",
+                      background: "var(--surface)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: "120px",
+                      maxHeight: "200px",
+                      position: "relative",
+                    }}>
+                      {imagePreviewStatus === "loading" && (
+                        <span style={{ color: "var(--gray-dark)", fontSize: "0.8rem" }}>Cargando preview...</span>
+                      )}
+                      {imagePreviewStatus === "error" && (
+                        <div style={{ textAlign: "center", padding: "1rem" }}>
+                          <div style={{ fontSize: "1.5rem" }}>⚠️</div>
+                          <p style={{ color: "#e53e3e", fontSize: "0.75rem", margin: "0.3rem 0 0" }}>
+                            No se puede mostrar esta imagen. Verificá que la URL sea un enlace directo a la imagen.
+                          </p>
+                        </div>
+                      )}
+                      <img
+                        src={form.image_url}
+                        alt="preview"
+                        style={{
+                          maxHeight: "196px",
+                          maxWidth: "100%",
+                          objectFit: "contain",
+                          display: imagePreviewStatus === "ok" ? "block" : "none",
+                        }}
+                        onLoad={() => setImagePreviewStatus("ok")}
+                        onError={() => setImagePreviewStatus("error")}
+                      />
+                      {imagePreviewStatus === "ok" && (
+                        <span style={{
+                          position: "absolute", top: 6, right: 8,
+                          background: "#38a169", color: "#fff",
+                          fontSize: "0.65rem", padding: "2px 7px", borderRadius: "99px", fontWeight: 700
+                        }}>✓ OK</span>
+                      )}
+                    </div>
+                  )}
+                  <p style={{ fontSize: "0.7rem", color: "var(--gray-dark)", marginTop: "0.3rem" }}>
+                    Podés pegar cualquier URL. Las URLs de <b>vvrl.cc</b> se convierten automáticamente.
+                  </p>
                 </div>
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <label className="form-label">URLs de galería (una por línea)</label>
